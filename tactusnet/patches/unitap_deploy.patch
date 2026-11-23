@@ -1,0 +1,45 @@
+--- a/tools/infer_pipeline.py
++++ b/tools/infer_pipeline.py
+@@ -34,6 +34,9 @@
+                      stage2=_pick(WS / "experiments/runs/F2_zoom_tv/out/checkpoints/best.pt", WS / "experiments/runs/E009/out/checkpoints/best.pt"),
+                      contact=_pick(WS / "experiments/runs/F3_contact_hs_tv/out/checkpoints/best.pt", WS / "experiments/runs/C006/out/checkpoints/best.pt"),  # hindsight contact targets (TactusNet default)
+                      refiner=_pick(WS / "experiments/runs/F4_refiner_tv/pixref/best.pt", WS / "experiments/runs/E008b/pixref/best.pt"))
++_DEP = WS / "UniTAP_deploy_ckpt"  # packaged deploy checkpoints (zip layout) win over the run dirs, which are not shipped
++if (_DEP / "stage1_head.pt").exists():
++    DEFAULT_CKPTS = dict(stage1=str(_DEP / "stage1_head.pt"), stage2=str(_DEP / "stage2_head.pt"), contact=str(_DEP / "contact_head.pt"), refiner=str(_DEP / "refiner.pt"))
+ LABELS = json.load(open(WS / "data/case32/v1/labels.json"))
+ 
+ 
+@@ -53,6 +56,8 @@
+         self.heads = {}; shared_vjepa = None
+         for name in ("stage1", "stage2", "contact"):
+             c = torch.load(ck[name], map_location="cpu"); args = argparse.Namespace(**dict(c["args"])); args.device = device
++            # ckpt args carry the original machine's absolute paths -> re-point to this checkout (VJEPA_CKPT env overrides the weight file)
++            args.vjepa_repo = str(WS / "third_party/t2b/vjepa2"); args.vjepa_checkpoint = os.environ.get("VJEPA_CKPT", str(WS / "weights/vjepa2_1_vitl_dist_vitG_384.pt")); args.vjepa_cache_dir = ""
+             m = build_model(args, num_combo_classes=len(LABELS["combo2id_6class"]))
+             load_trainable_state_dict(m, c["modules"]); m.eval()
+             if "ema" in c:
+--- a/tools/annotate_clips.py
++++ b/tools/annotate_clips.py
+@@ -91,7 +91,11 @@
+         tool_px = np.asarray(r["tool_xy"]) * [cw, ch] + [x0, y0]; ct_px = np.asarray(r["contact_xy"]) * [cw, ch] + [x0, y0]
+         tc, cc = np.nan_to_num(r["tool_conf"], nan=0.5), np.nan_to_num(r["contact_conf"], nan=0.5)
+         inside = [bool(j.get("action_start") is not None and int(j["action_start"]) <= int(i) <= int(j["action_end"])) for i in idx]
+-        frame_score = tc.mean(1) + cc.mean(1) + 0.5 * np.array(inside, float); sug = int(np.argmax(frame_score))
++        frame_score = tc.mean(1) + cc.mean(1) + 0.5 * np.array(inside, float)
++        # the seed (suggested) frame must lie inside the action interval; if the 16 samples miss a very short interval, take the sample nearest to it
++        if any(inside): sug = int(np.argmax(np.where(inside, frame_score, -np.inf)))
++        elif j.get("action_start") is not None: sug = int(np.argmin(np.maximum(0, np.maximum(int(j["action_start"]) - idx, idx - int(j["action_end"])))))
++        else: sug = int(np.argmax(frame_score))
+         roles = TOPO[ann.tool2topology.get(j["tool"], "1A2T")]; pts = []; pid = 0
+         for ti, fi in enumerate(idx):
+             for k in range(3):
+@@ -99,7 +103,7 @@
+             for k in range(4):
+                 pts.append(dict(id=pid, uid=10 + k, type="contact", frameIndex=int(fi), x=float(ct_px[ti, k, 0]), y=float(ct_px[ti, k, 1]), vis=True, conf=float(cc[ti, k]), inside_action=inside[ti])); pid += 1
+         rec = dict(id=j.get("id"), video=j["video"], imageDimensions=dict(width=int(Wf), height=int(Hf)), tool=j["tool"], action=j["action"], clip_range=[cs, ce], action_range=[j.get("action_start"), j.get("action_end")],
+-                   content_bbox=[int(v) for v in bbox], sampled_frames=[int(i) for i in idx], suggested_frame=int(idx[sug]), frame_scores=[float(v) for v in frame_score], points=pts, seconds=round(r["seconds"], 3))
++                   content_bbox=[int(v) for v in bbox], sampled_frames=[int(i) for i in idx], suggested_frame=int(idx[sug]), seed_inside_action=bool(inside[sug]), frame_scores=[float(v) for v in frame_score], points=pts, seconds=round(r["seconds"], 3))
+         tf = a.track_from if a.track_from is not None else (int(idx[sug]) if a.auto_track else None)
+         if tf is not None:
+             ti = int(np.argmin(np.abs(idx - tf))); q = np.concatenate([tool_px[ti], ct_px[ti]], 0)

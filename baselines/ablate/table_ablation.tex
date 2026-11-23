@@ -1,0 +1,101 @@
+% Ablations of TactusNet (baselines/ablate/PLAN.md). Source of the paper's Table 4 (Sec. 5.6 "Ablations of TactusNet"),
+% which the coordinator synced on 2026-11-05; edit here, and list row/column changes for the re-sync.
+% Plain numbers exist: experiments A and B (Tab. 3, Sec. 5.3, volume_metrics_20261105.json) and the coordinator's
+% re-score of A with common/score.py on the Gold test clips (Spatial Head stages, the eight non-SurgVU videos).
+% \abl{key}{x} prints the gray placeholder x with \tbd (preamble.tex); a gray number such as \abl{...}{18.94} is a known
+% value that waits for its re-score with baselines/common/score.py. `bash baselines/ablate/run.sh ablate_collect` writes a
+% copy with every scored key filled in black ($BL_OUT/ablate/table_ablation.tex) and the CIs in results.json.
+\providecommand{\abl}[2]{\tbd{#2}}
+
+\begin{table*}[t]
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{4.2pt}
+  \begin{tabular}{@{}lccccccccc@{}}
+    \toprule
+    Variant & Which$\uparrow$ & What$\uparrow$ & Pair$\uparrow$ & tIoU$\uparrow$ & R@0.7$\uparrow$ & ADE$\downarrow$ & Median$\downarrow$ & $>$32\,px$\downarrow$ & Dice$\uparrow$ \\
+    \midrule
+    \multicolumn{10}{@{}l}{\textit{(a) Training data (\cref{sec:silver})}} \\
+    Gold (\net)                                  & 96.2 & 96.5 & 93.8 & 0.592 & 40.7 & 19.15 & 9.9 & 20.3 & 0.243 \\
+    Gold + Silver                                & 98.2 & 96.1 & 95.5 & 0.587 & 39.7 & 18.93 & 9.7 & 19.5 & 0.244 \\
+    Gold, 8 non-SurgVU videos                    & -- & -- & -- & -- & -- & 18.94 & 10.9 & 20.3 & 0.233 \\
+    Gold + Silver, 8 non-SurgVU videos           & -- & -- & -- & -- & -- & \abl{silver.B.ns.ade}{19.07} & \abl{silver.B.ns.med}{xx.x} & \abl{silver.B.ns.gt32}{xx.x} & \abl{silver.B.ns.dice}{0.xxx} \\
+    \midrule
+    \multicolumn{10}{@{}l}{\textit{(b) Frozen encoder: Semantic, Temporal, and stage-1 tool heads retrained; How from stage 1, 20 epochs}} \\
+    V-JEPA~2.1 ViT-L, $384^2$ (\net)            & \abl{enc.ours.which}{96.2} & \abl{enc.ours.what}{96.5} & 93.8 & 0.592 & 40.7 & \abl{enc.ours.ade}{xx.xx} & \abl{enc.ours.med}{xx.x} & \abl{enc.ours.gt32}{xx.x} & -- \\
+    V-JEPA~2~\cite{assran2025vjepa2} ViT-L, $256^2$ & \abl{enc.vjepa2_l256.which}{xx.x} & \abl{enc.vjepa2_l256.what}{xx.x} & \abl{enc.vjepa2_l256.pair}{xx.x} & \abl{enc.vjepa2_l256.tiou}{0.xxx} & \abl{enc.vjepa2_l256.r7}{xx.x} & \abl{enc.vjepa2_l256.ade}{xx.xx} & \abl{enc.vjepa2_l256.med}{xx.x} & \abl{enc.vjepa2_l256.gt32}{xx.x} & -- \\
+    DINOv3~\cite{simeoni2025dinov3} ViT-L, $384^2$, per frame & \abl{enc.dinov3_l16_384.which}{xx.x} & \abl{enc.dinov3_l16_384.what}{xx.x} & \abl{enc.dinov3_l16_384.pair}{xx.x} & \abl{enc.dinov3_l16_384.tiou}{0.xxx} & \abl{enc.dinov3_l16_384.r7}{xx.x} & \abl{enc.dinov3_l16_384.ade}{xx.xx} & \abl{enc.dinov3_l16_384.med}{xx.x} & \abl{enc.dinov3_l16_384.gt32}{xx.x} & -- \\
+    LemonFM~\cite{che2026lemon} ConvNeXt-L, $384^2$, per frame & \abl{enc.lemonfm_384.which}{xx.x} & \abl{enc.lemonfm_384.what}{xx.x} & \abl{enc.lemonfm_384.pair}{xx.x} & \abl{enc.lemonfm_384.tiou}{0.xxx} & \abl{enc.lemonfm_384.r7}{xx.x} & \abl{enc.lemonfm_384.ade}{xx.xx} & \abl{enc.lemonfm_384.med}{xx.x} & \abl{enc.lemonfm_384.gt32}{xx.x} & -- \\
+    \midrule
+    \multicolumn{10}{@{}l}{\textit{(c) Spatial Head, no retraining}} \\
+    Stage 1, full frame                          & -- & -- & -- & -- & -- & 20.24 & 12.5 & 20.0 & -- \\
+    + zoom, encoded again (stage 2)              & -- & -- & -- & -- & -- & 19.42 & 10.4 & 20.0 & -- \\
+    + pixel refiner (\net)                       & -- & -- & -- & -- & -- & 19.15 & 9.9 & 20.3 & -- \\
+    Stage 1 + pixel refiner, no zoom             & -- & -- & -- & -- & -- & \abl{comp.stage1_refiner.ade}{xx.xx} & \abl{comp.stage1_refiner.med}{xx.x} & \abl{comp.stage1_refiner.gt32}{xx.x} & -- \\
+    \midrule
+    \multicolumn{10}{@{}l}{\textit{(d) Conditions of the Temporal and Spatial Heads}} \\
+    True tool and action (protocol)              & -- & -- & -- & 0.592 & 40.7 & 19.15 & 9.9 & 20.3 & \abl{cond.gt.dice}{0.243} \\
+    Predicted by the Semantic Head               & \abl{enc.ours.which}{96.2} & \abl{enc.ours.what}{96.5} & 93.8 & \abl{cond.pred.tiou}{0.xxx} & \abl{cond.pred.r7}{xx.x} & \abl{cond.pred.ade}{xx.xx} & \abl{cond.pred.med}{xx.x} & \abl{cond.pred.gt32}{xx.x} & \abl{cond.pred.dice}{0.xxx} \\
+    None (Temporal Head retrained)               & -- & -- & -- & \abl{cond.none.tiou}{0.xxx} & \abl{cond.none.r7}{xx.x} & -- & -- & -- & -- \\
+    \midrule
+    \multicolumn{10}{@{}l}{\textit{(e) Training targets of the contact decoder (Dice against the human regions; in parentheses, against the hindsight targets)}} \\
+    Hindsight targets (\net)                     & -- & -- & -- & -- & -- & -- & -- & -- & 0.243 (0.580) \\
+    Human regions                                & -- & -- & -- & -- & -- & -- & -- & -- & \abl{ct.human.dice}{0.xxx} (\abl{ct.human.dice_hs}{0.xxx}) \\
+    \bottomrule
+  \end{tabular}
+  % TODO (authors): replace the first, bold sentence with the main finding once the numbers are in.
+  \caption{\textbf{Ablations of \net on the Gold test set.}
+  Each block changes one part of \net; its reference row is \net itself.
+  (a) adds the 7,066 Silver clips to the training set; the last two rows score How on the test videos whose tool points the Silver generator never saw.
+  (b) replaces the frozen V-JEPA~2.1 encoder and retrains the heads that read full-frame tokens; the zoom stage, the contact decoder, and the refiner are not retrained, so How is the stage-1 output after a 20-epoch schedule, the same for every encoder.
+  The image encoders run on each frame, and the two frames of a V-JEPA tubelet are averaged.
+  (c) scores the intermediate outputs of the Spatial Head and applies the refiner to the stage-1 points.
+  (d) feeds the later heads the Semantic Head's predictions instead of the true tool and action; Which, What, and Pair give the accuracy of these conditions.
+  (e) retrains only the contact decoder.
+  Metrics as in \cref{tab:results}; Median: median tool-point error in pixels. Gray entries are placeholders.}
+  \label{tab:ablation}
+\end{table*}
+
+% ---------------------------------------------------------------------------------------------------- supplement
+\begin{table}[t]
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{5pt}
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    Temporal Head of \net                & tIoU$\uparrow$ & R@0.5$\uparrow$ & R@0.7$\uparrow$ \\
+    \midrule
+    Distance bins and quality score      & 0.592 & 67.0 & 40.7 \\
+    Bins, no quality score               & \abl{tmp.noquality.tiou}{0.xxx} & \abl{tmp.noquality.r5}{xx.x} & \abl{tmp.noquality.r7}{xx.x} \\
+    Direct regression, no quality score  & \abl{tmp.scalar.tiou}{0.xxx} & \abl{tmp.scalar.r5}{xx.x} & \abl{tmp.scalar.r7}{xx.x} \\
+    \bottomrule
+  \end{tabular}
+  \caption{\textbf{Temporal Head design (supplement).}
+  Retrained without the quality score, or with direct start and end regression instead of distance bins; the quality score needs the bins.
+  Gray entries are placeholders.}
+  \label{tab:ablation_temporal}
+\end{table}
+
+\begin{table}[t]
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3.5pt}
+  \begin{tabular}{@{}lcccc@{}}
+    \toprule
+    Stage 1, 20 epochs                   & ADE$\downarrow$ & ADE$_8\downarrow$ & ADE$_{\text{-YT}}\downarrow$ & $>$32\,px$\downarrow$ \\
+    \midrule
+    V-JEPA~2.1, $384^2$ (\net)           & \abl{enc.ours.ade}{xx.xx} & \abl{enc.ours.ade_ns}{xx.xx} & \abl{enc.ours.ade_noyt}{xx.xx} & \abl{enc.ours.gt32}{xx.x} \\
+    \quad without conditions             & \abl{s1.nocond.ade}{xx.xx} & \abl{s1.nocond.ade_ns}{xx.xx} & \abl{s1.nocond.ade_noyt}{xx.xx} & \abl{s1.nocond.gt32}{xx.x} \\
+    V-JEPA~2.1, $256^2$                  & \abl{enc.vjepa21_l256.ade}{xx.xx} & \abl{enc.vjepa21_l256.ade_ns}{xx.xx} & \abl{enc.vjepa21_l256.ade_noyt}{xx.xx} & \abl{enc.vjepa21_l256.gt32}{xx.x} \\
+    V-JEPA~2, $256^2$                    & \abl{enc.vjepa2_l256.ade}{xx.xx} & \abl{enc.vjepa2_l256.ade_ns}{xx.xx} & \abl{enc.vjepa2_l256.ade_noyt}{xx.xx} & \abl{enc.vjepa2_l256.gt32}{xx.x} \\
+    DINOv3, $384^2$, per frame           & \abl{enc.dinov3_l16_384.ade}{xx.xx} & \abl{enc.dinov3_l16_384.ade_ns}{xx.xx} & \abl{enc.dinov3_l16_384.ade_noyt}{xx.xx} & \abl{enc.dinov3_l16_384.gt32}{xx.x} \\
+    LemonFM, $384^2$, per frame          & \abl{enc.lemonfm_384.ade}{xx.xx} & \abl{enc.lemonfm_384.ade_ns}{xx.xx} & \abl{enc.lemonfm_384.ade_noyt}{xx.xx} & \abl{enc.lemonfm_384.gt32}{xx.x} \\
+    \bottomrule
+  \end{tabular}
+  \caption{\textbf{Stage-1 tool points of \cref{tab:ablation}b on test subsets (supplement).}
+  ADE$_8$: the eight non-SurgVU test videos; ADE$_{\text{-YT}}$: without the three YouTube test videos, which the LEMON pretraining set of LemonFM may contain.
+  Without conditions: the decoder gets a constant tool and action in training and test.
+  The $256^2$ row of V-JEPA~2.1 separates the input size from the encoder version in the V-JEPA~2 row.
+  Gray entries are placeholders.}
+  \label{tab:ablation_stage1}
+\end{table}

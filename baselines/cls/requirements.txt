@@ -1,0 +1,4 @@
+# Extra packages of baselines/cls beyond torch, torchvision, transformers==5.1.0, timm==1.0.24, opencv, numpy, scipy,
+# pillow (huggingface_hub and tokenizers come with transformers). Install with: $BL_PY -m pip install -r baselines/cls/requirements.txt
+einops==0.8.2      # vendored Endo-FM TimeSformer (rearrange)
+gdown==6.0.0       # Endo-FM pretrained checkpoint from Google Drive (weights.py)

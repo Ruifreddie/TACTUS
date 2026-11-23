@@ -19,6 +19,10 @@ The six annotated pairs are hook–dissect, grasper–grasp, grasper–dissect, 
 
 The Gold and Silver indexes describe annotation tiers. For comparisons with the paper, use the [video-level benchmark split](../evaluation/README.md).
 
+## From annotations to arrays
+
+The benchmark code does not read the annotation files directly. [`training/pipeline/export_clips.py`](../training/pipeline/export_clips.py) crops each video to its picture content, samples 16 frames per action window, and writes per-clip arrays. [`baselines/common/data.py`](../baselines/common/data.py) then gives every method the same view of a clip: frames, tool points, contact points, the interaction interval, and labels. [`training/README.md`](../training/README.md) lists the commands.
+
 ## Source terms
 
 The current dataset card describes an October 2026 annotation-tool export and labels it “Private, internal use.” Review the [dataset card](https://huggingface.co/datasets/hding2455/surgical-action-affordance/blob/main/README.md) and the terms of the original video source before reusing or redistributing clips.

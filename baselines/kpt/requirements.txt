@@ -1,0 +1,3 @@
+# Extras of baselines/kpt on top of the base baseline environment (torch 2.8+/CUDA 12.8, torchvision, numpy, opencv,
+# pillow, which baselines/common already needs). Pure PyTorch: no mmcv, no compiled CUDA extensions.
+transformers==5.1.0        # VitPoseForPoseEstimation (ViTPose-B architecture); built from config, no pose weights

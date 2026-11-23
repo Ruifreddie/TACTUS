@@ -10,4 +10,18 @@ TactusNet is the reference network for the five TACTUS tasks. In the default con
 
 For contact-region training, TactusNet derives each sampled frame's targets from instrument-tip positions in the interaction window, using visible tips at or after that frame when available. The benchmark scores the predicted region against the human-defined tissue region on Gold test clips using direct predictions on the sampled frames, before track propagation.
 
-The model implementation will be added here. The [evaluation protocol](../evaluation/README.md) describes the inputs and metrics used in the paper.
+## Code
+
+| Part | Where |
+| --- | --- |
+| Architecture and inference wiring | [`tactusnet/`](../tactusnet/README.md) |
+| Training of every head, from the dataset release to test scores | [`training/`](../training/README.md) |
+| Contact decoder with tip-derived (default) or human-annotated targets | [`training/CONTACT_SUPERVISION.md`](../training/CONTACT_SUPERVISION.md) |
+| Other frozen encoders under the same heads | [`baselines/ablate/`](../baselines/ablate/README.md) |
+| Fine-tuning the encoder | [`baselines/ft/`](../baselines/ft/README.md) |
+
+The [evaluation protocol](../evaluation/README.md) describes the inputs and metrics used in the paper.
+
+## Checkpoints
+
+Trained weights are not in this repository. They will be linked here once they are hosted.

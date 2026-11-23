@@ -1,0 +1,5 @@
+# Extras of the Where family on top of the pod image (torch 2.8, CUDA 12.8) and pipeline/requirements.txt.
+# SegFormer comes from Hugging Face transformers (pytorch_model.bin needs torch >= 2.6 for torch.load(weights_only=True));
+# the pins equal pipeline/requirements.txt, so on a pod that installed those this is a no-op.
+transformers==5.1.0
+huggingface_hub==1.8.0

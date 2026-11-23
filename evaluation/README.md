@@ -20,4 +20,18 @@ The [Gold release index](https://huggingface.co/datasets/hding2455/surgical-acti
 
 For the main localization comparison, models receive the ground-truth tool and action as inputs. The paper separately evaluates localization conditioned on predicted classes.
 
-Evaluation scripts will be added here.
+## Running the evaluation
+
+The metric code is [`baselines/common/`](../baselines/common): `metrics.py` defines the metrics, `preds.py` the prediction file, and `score.py` scores a file. TactusNet and every baseline are scored through the same script.
+
+```bash
+# score one method on the Gold test set
+python -m baselines.common.score --pred OUT/my_method/pred_test.npz --out OUT/my_method/metrics_test.json
+
+# compare two methods: paired bootstrap of A - B over the test videos
+python -m baselines.common.score --pred A.npz --compare B.npz
+```
+
+`score.py` reports each metric on all test clips, per source, and per tool–action pair, with a 95% bootstrap confidence interval over test videos. It reads the exported clips from `BL_EXPORT` (see [`baselines/README.md`](../baselines/README.md), which also specifies the prediction file and walks through adding a method).
+
+The video-level split is in [`training/pipeline/splits/gold_v2/`](../training/pipeline/splits/gold_v2): `split_videos.csv` assigns each Gold video to a partition, and `index_gold_{train,val,test}.json` list the annotations of each partition in the format of the dataset's index files. The export step of the [training pipeline](../training/README.md) turns these lists into the per-clip arrays that training and scoring read.

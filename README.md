@@ -1,8 +1,25 @@
+<p align="center"><img src="assets/tactus_banner.png" alt="TACTUS: Tool, Action, Contact and Trajectory Understanding in Surgery" width="100%"></p>
+
 # TACTUS: Unifying Surgical Action Understanding in Time and Space
 
 **TACTUS** (Tool, Action, Contact and Trajectory Understanding in Surgery) is a dataset and benchmark for following an instrument–tissue interaction from approach through completion. Each clip ties the identity of the instrument and action to the interaction's timing, the instrument's trajectory, and the tissue region involved.
 
 **[Dataset on Hugging Face](https://huggingface.co/datasets/hding2455/surgical-action-affordance)** · **[Annotation guide](data/README.md)** · **[TactusNet](models/README.md)** · **[Evaluation protocol](evaluation/README.md)**
+
+<table>
+  <tr>
+    <td><img src="assets/hook_dissect.gif" alt="hook, dissect" width="100%"></td>
+    <td><img src="assets/grasper_grasp.gif" alt="grasper, grasp" width="100%"></td>
+    <td><img src="assets/clipper_clip.gif" alt="clipper, clip" width="100%"></td>
+  </tr>
+  <tr>
+    <td><img src="assets/scissors_cut.gif" alt="scissors, cut" width="100%"></td>
+    <td><img src="assets/grasper_dissect.gif" alt="grasper, dissect" width="100%"></td>
+    <td><img src="assets/scissors_dissect.gif" alt="scissors, dissect" width="100%"></td>
+  </tr>
+</table>
+
+<p align="center"><sub>One Gold clip per tool–action pair, drawn from its annotation. 🔴 instrument tips · 🟡 instrument anchors · 🟦 contact region on the tissue · 🟧 interaction window inside the action window.</sub></p>
 
 ## Dataset
 
@@ -27,7 +44,44 @@ For example, a grasper–grasp clip captures the approach, jaw closure, and retr
 
 ## Code release
 
-This repository currently contains the dataset, model, and benchmark documentation. The TactusNet implementation and evaluation scripts will be added here.
+This repository holds the code behind the benchmark: the evaluation protocol, TactusNet, the adapted baselines, and the tools to swap or fine-tune the encoder.
+
+| I want to… | Start here |
+| --- | --- |
+| Score my own method on TACTUS | [`evaluation/`](evaluation/README.md): one prediction file per method, one scoring command. |
+| Add a baseline | [`baselines/`](baselines/README.md): the data reader, the prediction format, and thirteen published methods already adapted. |
+| Swap TactusNet's backbone | [`baselines/ablate/`](baselines/ablate/README.md): a registry of frozen encoders and the steps to add your own. |
+| Fine-tune the encoder | [`baselines/ft/`](baselines/ft/README.md): one shared encoder, one encoder per head, and a frozen control. |
+| Train TactusNet | [`training/`](training/README.md): the pipeline from the Hugging Face release to trained heads and test scores. |
+| Train the contact decoder on either target | [`training/CONTACT_SUPERVISION.md`](training/CONTACT_SUPERVISION.md): hindsight targets (the default) or human-annotated regions. |
+| Read the architecture | [`tactusnet/`](tactusnet/README.md): the heads and how they connect, with CPU tests. |
+
+### Layout
+
+| Directory | Contents |
+| --- | --- |
+| `data/` | How to read the annotations, and where the benchmark split lives. |
+| `evaluation/` | The evaluation protocol and how to run the metric code. |
+| `models/` | TactusNet in brief, with pointers to its code. |
+| `tactusnet/` | Architecture and inference package. |
+| `training/` | Training pipeline of TactusNet: clip export, token caching, the recipe of every head, evaluation. |
+| `baselines/` | Shared data reader and metrics (`common/`), baselines for classification (`cls/`), temporal localization (`when/`), keypoints (`kpt/`) and contact regions (`where/`), the backbone swap (`ablate/`), and encoder fine-tuning (`ft/`). |
+
+### Setup
+
+```bash
+git clone https://github.com/Ruifreddie/TACTUS.git && cd TACTUS
+pip install -r training/pipeline/requirements.txt   # plus PyTorch with CUDA for your machine
+export PYTHONPATH=$PWD
+```
+
+Each baseline family lists its few extra packages in its own `requirements.txt`. TactusNet and the temporal baselines read features of the V-JEPA 2.1 ViT-L encoder at 384 × 384; download `vjepa2_1_vitl_dist_vitG_384.pt` from the official [V-JEPA 2 release](https://github.com/facebookresearch/vjepa2) and point `VJEPA_CKPT` at it.
+
+The training code is the code that produced the reported results, kept as it ran. Its scripts expect two directories: persistent storage (`GV`) and a fast local disk (`WORK`). [`training/README.md`](training/README.md) explains both.
+
+### License
+
+Code written for TACTUS is released under the [MIT License](LICENSE). Third-party code keeps its own license, listed in [`THIRD_PARTY.md`](THIRD_PARTY.md). The dataset and the source videos have their own terms; see [`data/README.md`](data/README.md).
 
 ## Authors
 

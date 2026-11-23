@@ -1,0 +1,8 @@
+# Extras of baselines/when on top of the pod image (torch 2.8 / CUDA 12.8, numpy). Versions = the local smoke env.
+# Install with: $BL_PY -m pip install -r baselines/when/requirements.txt
+scipy==1.17.1                       # QD-DETR's Hungarian matcher (scipy.optimize.linear_sum_assignment)
+transformers==5.1.0                 # CLIP ViT-B/32 text encoder (features.py text; CPU, once)
+huggingface_hub==1.8.0              # downloads CLIP into $BL_WEIGHTS
+timm==1.0.24                        # imported by the V-JEPA 2.1 code (features.py extract32 / check)
+einops==0.8.2                       # imported by the V-JEPA 2.1 code
+opencv-python-headless==4.13.0.92   # frame decoding of baselines.common.data.raw_frames (extract32)

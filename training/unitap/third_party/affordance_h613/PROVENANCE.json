@@ -1,0 +1,41 @@
+{
+  "source_model": "scripts/repro/run_h161_roi_condlite.py",
+  "source_sha256": "5c50ce72a156d8bce4cc25f02c9fbf5bd4374551940a3123488fa2e5b7d62d28",
+  "wrapper_sha256": "cd86017da6d139b13ff91e8644ac004a87ce0582d37b78ed6cece372e5d1cc89",
+  "extracted_definitions": [
+    "H161QuadTemporalRegion",
+    "H161RoiCondLite",
+    "H191QuadLocalPointTemporalRegion",
+    "H210ProposalOrientedStage1",
+    "H210ProposalPointTemporalRegion",
+    "H259TrajectoryPriorTemporalRegion",
+    "cxcywh_to_xyxy",
+    "encode_rgb_sidecar_8",
+    "make_rgb_sidecar_encoder",
+    "oriented_rect_to_quad",
+    "parse_combo_index_allowlist",
+    "parse_float_csv",
+    "parse_int_csv",
+    "parse_template_sizes_px",
+    "quad_axes",
+    "quad_inside_grid",
+    "quad_iou_approx",
+    "quad_polygon_area",
+    "quad_soft_inside_grid",
+    "quad_to_xyxy",
+    "roll_quad_start_min_sum",
+    "token_affinity_variant_count",
+    "topology_contact_template_count",
+    "xyxy_to_cxcywh_torch"
+  ],
+  "configuration": "H613 constructor arguments only; no data paths or run metadata",
+  "weights_included": false,
+  "training_source_sha256": "5c50ce72a156d8bce4cc25f02c9fbf5bd4374551940a3123488fa2e5b7d62d28",
+  "training_config_redacted_fields": {
+    "data_root": "data",
+    "cache_root": "data/vjepa_token_cache",
+    "video_root": null,
+    "out_dir": "runs/h613"
+  },
+  "scope": "Full original affordance trainer plus portable H613 launch/configuration and inference API"
+}
