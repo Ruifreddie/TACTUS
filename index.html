@@ -419,28 +419,25 @@
     --b: max(2px, calc(var(--u) * 2)); --ih: calc(var(--u) * 40); --gap: calc(var(--u) * 12);
     position: absolute; z-index: 2;
     /* the paw tip, as a point of the 1920 x 1080 video frame (the bubble is pinned the same way) */
-    left: calc((100vw - 1920 * var(--vs)) * .62 + 1920 * var(--vs) * .372);
+    left: max(calc(var(--gutter) + 15ch), calc((100vw - 1920 * var(--vs)) * .62 + 1920 * var(--vs) * .372 - var(--u) * 10));
     top: calc((100vh - 1080 * var(--vs)) * .5 + 1080 * var(--vs) * .632);
-    width: 0; height: 0;
+    display: grid; justify-items: end; gap: var(--gap); width: max-content;
+    transform: translate(-100%, calc(-100% + var(--ih) * .5));
   }
   .paw-item {
-    position: absolute; right: calc(var(--u) * 10); top: 0; height: var(--ih); padding: 0 calc(var(--u) * 18);
+    height: var(--ih); padding: 0 calc(var(--u) * 18);
     display: flex; align-items: center; white-space: nowrap; font-size: calc(var(--u) * 13);
     background: var(--paper); color: var(--ink);
     box-shadow: 0 calc(var(--b) * -1) 0 0 var(--ink), 0 var(--b) 0 0 var(--ink), calc(var(--b) * -1) 0 0 0 var(--ink), var(--b) 0 0 0 var(--ink),
                 calc(var(--u) * 5) calc(var(--u) * 5) 0 0 var(--ink);
-    transform: translateY(calc(-50% + var(--o, 0) * (var(--ih) + var(--gap))));
-    opacity: .78; transition: transform .55s cubic-bezier(0.16, 1, 0.3, 1), opacity .3s, background-color .12s, color .12s, box-shadow .12s;
+    opacity: .78; transition: opacity .15s, background-color .12s, color .12s;
   }
-  .paw-item:hover { opacity: 1; }
-  .paw-item.is-active { opacity: 1; }
-  .paw-item.is-active::after { content: ""; margin-left: calc(var(--u) * 10); width: calc(var(--u) * 7); height: calc(var(--u) * 7); background: var(--orange); }
-  .paw-item.is-tapped { background: var(--orange); color: #fff;
-    box-shadow: 0 calc(var(--b) * -1) 0 0 var(--ink), 0 var(--b) 0 0 var(--ink), calc(var(--b) * -1) 0 0 0 var(--ink), var(--b) 0 0 0 var(--ink), 0 0 0 0 var(--ink);
-    transform: translate(calc(var(--u) * 5), calc(-50% + var(--o, 0) * (var(--ih) + var(--gap)) + var(--u) * 5)); }
+  .paw-item:hover, .paw-item:focus-visible, .paw-item.is-active { opacity: 1; }
+  .paw-item:focus-visible { outline: 2px solid var(--orange); outline-offset: 5px; }
+  .paw-item::after { content: ""; margin-left: calc(var(--u) * 10); width: calc(var(--u) * 7); height: calc(var(--u) * 7); background: var(--orange); visibility: hidden; }
+  .paw-item.is-active::after { visibility: visible; }
+  .paw-item.is-tapped { background: var(--orange); color: #fff; }
   .paw-item.is-tapped::after { background: #fff; }
-  .bubble { transition: transform .16s cubic-bezier(.3, 1.6, .5, 1), background-color .16s; transform-origin: 0 100%; }
-  .bubble.is-pop { transform: translateY(calc(-100% - var(--u) * 12)) scale(1.08) rotate(-1.5deg); }
   .bubble.is-tap { background: #fff; }
   .hero__body .hero__actions { display: none; }          /* the links moved to the paw */
   .hero__lede { margin-bottom: calc(var(--u) * 6); }
@@ -498,7 +495,7 @@
   <p class="hero__paper">Unifying Surgical Action Understanding<br>in Time and Space</p>
   <div class="mosaic-slot" id="mosaicSlot" aria-hidden="true"></div>
 
-  <p class="bubble" id="bubble" aria-live="polite"><span id="bubbleText">Purr! Want the code?</span><span class="bubble__cursor" aria-hidden="true"></span>
+  <p class="bubble" id="bubble" aria-hidden="true"><span id="bubbleText">Purr! Want the code?</span><span class="bubble__cursor" aria-hidden="true"></span>
     <svg class="bubble__tail" viewBox="0 0 6 6" shape-rendering="crispEdges" aria-hidden="true"><path fill="#e7e7e7" d="M1 0h4v1h-1v1h-1v1h-1v1h-1z"/><path fill="#050505" d="M0 0h1v5h-1zM1 4h1v1h-1zM2 3h1v1h-1zM3 2h1v1h-1zM4 1h1v1h-1zM5 0h1v1h-1z"/></svg>
   </p>
 
@@ -522,7 +519,7 @@
     <ul class="hero__stats" aria-label="TACTUS at a glance">
       <li>22,995 action clips</li>
       <li>141 videos</li>
-      <li>5 questions per clip</li>
+      <li>5 benchmark questions</li>
     </ul>
   </div>
   <canvas id="scene"></canvas>
@@ -545,9 +542,9 @@
 <section class="sec abstract" id="abstract">
   <div class="sec__head"><span class="sec__no">01</span><h2 class="sec__title">Abstract</h2></div>
   <div class="gc rv"><div class="gc-hatch"></div><div class="gc-frame"><div class="gc-cell gc-pad">
-    <p>Surgical video models are learning to name what they see: the tool, the action, the phase of an operation. Yet an operation turns on what names leave out: when a tool starts to act, how its tip moves, and where it touches tissue. A surgeon follows all of this at a glance. Can models? No surgical dataset we review can tell, because none labels all of it on the same action.</p>
-    <p>We present <b>TACTUS</b>: 22,995 clips (2.9M frames) from 141 videos of five public sources, with tool and action classes, nested time spans, and, in nearly all, per-frame tool keypoints and contact regions. Per-frame labels are costly, about 15 minutes a clip, so TACTUS comes in two tiers. In 15,668 <b>Gold</b> clips, humans prompt a tracker on key frames, and each clip is reviewed and re-checked; in 7,327 <b>Silver</b> clips, a model places the prompts, at about one minute a clip.</p>
-    <p>On TACTUS, the answer is a sharp split. Our baseline, <b>TactusNet</b>, names 93.8% of tool&ndash;action pairs, yet even the best method per question recalls only 47% of action intervals at a tIoU of 0.7, misses a fifth of tool points by over 32 pixels, and reaches a contact Dice of 0.35. Naming these actions is within reach; following them remains open.</p>
+    <p>A surgical video model can recognize a maneuver by identifying the tool and its action. Following the maneuver also requires knowing when the instrument acts, how it moves, and where it touches tissue. Existing surgical benchmarks usually evaluate these questions separately. TACTUS brings them together within the same action.</p>
+    <p>We present <b>TACTUS</b>, a dataset of 22,995 action clips spanning 2.9 million frames from 141 videos across five public sources. Annotators identify the tool and action and mark the interaction window within the full action. Nearly all clips also include per-frame tool landmarks and tissue contact regions. In 15,668 <b>Gold</b> clips, people place the spatial prompts for tracking, then review and re-check the annotations. In 7,327 <b>Silver</b> clips, a model places the spatial prompts.</p>
+    <p>On the Gold test set, our reference model, <b>TactusNet</b>, identifies the tool and action together in 93.8% of clips after training on Gold. Adding Silver raises that accuracy to 95.5%. In a separate Gold-only experiment, fine-tuning an encoder for each head group reaches 95.8%. Pinpointing the interaction remains harder. ActionFormer recalls 46.6% of interaction windows at a temporal IoU threshold of 0.7, and SegFormer reaches a Dice score of 0.351 for overlap with the annotated contact region.</p>
   </div></div><div class="gc-hatch"></div></div>
 </section>
 
@@ -568,7 +565,7 @@
 </section>
 
 <section class="sec" id="questions">
-  <div class="sec__head"><span class="sec__no">03</span><h2 class="sec__title">Five Questions</h2><span class="sec__sub">What every clip answers</span></div>
+  <div class="sec__head"><span class="sec__no">03</span><h2 class="sec__title">Five Questions</h2><span class="sec__sub">What the annotations describe</span></div>
   <div class="gc rv"><div class="gc-hatch"></div><div class="gc-frame">
     <div class="gc-row c5">
       <div class="gc-cell gc-card"><div class="gc-well"></div><p class="gc-num">01</p><h3 class="gc-title">Which</h3><p class="gc-copy">Which instrument acts? One of four tools: hook, grasper, scissors, or clipper.</p></div>
@@ -591,7 +588,7 @@
       <div class="gc-cell gc-stat"><b>141</b><span>videos</span></div>
       <div class="gc-cell gc-stat"><b>2.9M</b><span>frames</span></div>
       <div class="gc-cell gc-stat"><b>6</b><span>tool&ndash;action pairs</span></div>
-      <div class="gc-cell gc-stat"><b>5</b><span>questions per clip</span></div>
+      <div class="gc-cell gc-stat"><b>5</b><span>benchmark questions</span></div>
     </div>
     <div class="gc-row c1"><div class="gc-cell gc-well" style="padding: calc(var(--u) * 22);"><img src="assets/fig_pipeline.png" alt="How TACTUS is annotated: select sources, cut clips and mark time, place points (Gold), review, and scale up with TactusNet (Silver)" loading="lazy" style="mix-blend-mode: multiply;"></div></div>
     <div class="gc-row c2 stack">
@@ -608,8 +605,8 @@
     <div class="gc-row c4">
       <div class="gc-cell gc-card"><div class="gc-well"></div><p class="gc-num">Stage I</p><h3 class="gc-title">Semantic Head</h3><p class="gc-copy">The instrument and action, decoded as one of the six valid tool&ndash;action pairs.</p></div>
       <div class="gc-cell gc-card"><div class="gc-well"></div><p class="gc-num">Stage II</p><h3 class="gc-title">Temporal Head</h3><p class="gc-copy">The start and end of the interaction window within the action window.</p></div>
-      <div class="gc-cell gc-card"><div class="gc-well"></div><p class="gc-num">Stage III</p><h3 class="gc-title">Spatial Head</h3><p class="gc-copy">Three instrument landmarks and four contact-region corners: first on the full frame, then on a crop, with a refiner at native resolution.</p></div>
-      <div class="gc-cell gc-card"><div class="gc-well"></div><p class="gc-num">Stage IV</p><h3 class="gc-title">Track Propagation</h3><p class="gc-copy">A frozen point tracker carries the predicted points through every frame of the action window.</p></div>
+      <div class="gc-cell gc-card"><div class="gc-well"></div><p class="gc-num">Stage III</p><h3 class="gc-title">Spatial Head</h3><p class="gc-copy">TactusNet first locates the tool on each full frame and crops around its landmarks. Separate decoders predict three tool landmarks and four contact-region corners in the crop. A final pass refines the tool landmarks at native resolution.</p></div>
+      <div class="gc-cell gc-card"><div class="gc-well"></div><p class="gc-num">Stage IV</p><h3 class="gc-title">Track Propagation</h3><p class="gc-copy">For dense annotation, TactusNet selects the most confident frame within the interaction window separately for tool points and contact corners. CoTracker3 tracks each group through the full action window.</p></div>
     </div>
   </div><div class="gc-hatch"></div></div>
 </section>
@@ -667,7 +664,7 @@
       </table>
     </div></div>
     <div class="gc-row c1"><div class="gc-cell gc-pad" style="display:flex;flex-wrap:wrap;gap:calc(var(--u) * 14);align-items:center;justify-content:space-between;">
-      <p class="gc-copy" style="max-width:62ch;">All methods train on the Gold training set and are scored by the same code. Shaded rows are TactusNet; the best value of each column is marked. Add your own method with one prediction file.</p>
+      <p class="gc-copy" style="max-width:62ch;">The learned methods train on Gold. The three reference baselines have no trainable parameters. When, How, and Where use the ground-truth tool and action. Spatial scores use direct predictions on 16 sampled frames, before track propagation. Shaded rows show TactusNet. Each column highlights its best value.</p>
       <div class="hero__actions"><a class="btn" href="https://github.com/Ruifreddie/TACTUS/tree/main/baselines">Run the benchmark</a><a class="btn" href="https://huggingface.co/abccbd/TACTUS-TactusNet">Get the checkpoints</a></div>
     </div></div>
   </div><div class="gc-hatch"></div></div>
@@ -713,34 +710,37 @@
 </script>
 <script>
   (function () {
-    var video = document.querySelector('.hero__media'), menu = document.getElementById('pawMenu');
-    var bubble = document.getElementById('bubble'), text = document.getElementById('bubbleText');
-    if (!video || !menu) return;
-    var items = [].slice.call(menu.querySelectorAll('.paw-item'));
-    items.forEach(function (el, i) { el.style.setProperty('--i', i); });
-    var PAW_OUT = 3.75, PAW_IN = 4.95;            // seconds of the 8 s loop during which the paw is stretched out
-    var active = -1, tapped = false, last = 0, typing = null;
-    function type(str) {                           // typewriter, like the template's blinking cursor suggests
-      clearInterval(typing); var n = 0; text.textContent = '';
-      bubble.classList.add('is-pop'); setTimeout(function () { bubble.classList.remove('is-pop'); }, 170);
-      typing = setInterval(function () { text.textContent = str.slice(0, ++n); if (n >= str.length) clearInterval(typing); }, 26);
+    const menu = document.getElementById('pawMenu');
+    const video = document.querySelector('.hero__media');
+    const bubble = document.getElementById('bubble');
+    const text = document.getElementById('bubbleText');
+    const links = Array.from(menu.querySelectorAll('.paw-item'));
+    let active = links[0];
+    let lastTime = video.currentTime;
+
+    function highlight(link, tapped = false) {
+      active.classList.remove('is-active', 'is-tapped');
+      active = link;
+      active.classList.add('is-active');
+      active.classList.toggle('is-tapped', tapped);
+      bubble.classList.toggle('is-tap', tapped);
+      text.textContent = tapped ? link.dataset.tap : link.dataset.idle;
     }
-    function setActive(i) {
-      active = i; menu.style.setProperty('--active', i);
-      items.forEach(function (el, k) { el.classList.toggle('is-active', k === i); el.classList.remove('is-tapped'); el.style.setProperty('--o', -((k - i + items.length) % items.length)); });   // the waiting links stack above the paw
-      tapped = false; bubble.classList.remove('is-tap'); type(items[i].dataset.idle);
+    highlight(active);
+    for (const link of links) {
+      link.addEventListener('pointerenter', () => highlight(link));
+      link.addEventListener('focus', () => highlight(link));
     }
-    function tick() {
-      var t = video.currentTime;
-      if (active < 0 || t < last - 1) setActive((active + 1) % items.length);     // the video looped: next link
-      last = t;
-      var out = t > PAW_OUT && t < PAW_IN;
-      if (out && !tapped) { tapped = true; items[active].classList.add('is-tapped'); bubble.classList.add('is-tap'); type(items[active].dataset.tap); }
-      if (!out && tapped && t >= PAW_IN) { items[active].classList.remove('is-tapped'); bubble.classList.remove('is-tap'); }
-      requestAnimationFrame(tick);
-    }
-    items.forEach(function (el, k) { el.addEventListener('mouseenter', function () { if (k !== active) setActive(k); }); });
-    requestAnimationFrame(tick);
+    // The kitten can highlight a link while idle, but each link keeps its own hit area.
+    video.addEventListener('timeupdate', () => {
+      const time = video.currentTime;
+      const looped = time < lastTime - 1;
+      lastTime = time;
+      if (menu.matches(':hover, :focus-within')) return;
+      const next = looped ? links[(links.indexOf(active) + 1) % links.length] : active;
+      const tapped = time > 3.75 && time < 4.95;
+      if (next !== active || tapped !== active.classList.contains('is-tapped')) highlight(next, tapped);
+    });
   })();
 </script>
 <script src="opening.js"></script>
