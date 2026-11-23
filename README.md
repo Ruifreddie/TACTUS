@@ -4,7 +4,7 @@
 
 **TACTUS** (Tool, Action, Contact and Trajectory Understanding in Surgery) is a dataset and benchmark for following an instrument–tissue interaction from approach through completion. Each clip ties the identity of the instrument and action to the interaction's timing, the instrument's trajectory, and the tissue region involved.
 
-**[Dataset on Hugging Face](https://huggingface.co/datasets/hding2455/surgical-action-affordance)** · **[Annotation guide](data/README.md)** · **[TactusNet](models/README.md)** · **[Evaluation protocol](evaluation/README.md)**
+**[Dataset on Hugging Face](https://huggingface.co/datasets/hding2455/surgical-action-affordance)** · **[Checkpoints](https://huggingface.co/abccbd/TACTUS-TactusNet)** · **[Annotation guide](data/README.md)** · **[TactusNet](models/README.md)** · **[Evaluation protocol](evaluation/README.md)**
 
 <table>
   <tr>

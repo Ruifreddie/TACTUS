@@ -24,4 +24,18 @@ The [evaluation protocol](../evaluation/README.md) describes the inputs and metr
 
 ## Checkpoints
 
-Trained weights are not in this repository. They will be linked here once they are hosted.
+Trained weights are on Hugging Face: **[abccbd/TACTUS-TactusNet](https://huggingface.co/abccbd/TACTUS-TactusNet)**.
+
+| Directory | Contents |
+| --- | --- |
+| `tactusnet_gold/` | TactusNet trained on the Gold training split: Semantic Head, Temporal Head, both stages of the Spatial Head, the contact decoder (hindsight targets), and the pixel refiner. |
+| `tactusnet_gold_silver/` | The same heads trained on Gold plus Silver. |
+| `backbones/` | Semantic Head, Temporal Head and stage 1 of the Spatial Head retrained on V-JEPA 2, VideoMAE and Endo-FM tokens. |
+| `baselines/` | The thirteen baselines of the benchmark. |
+
+```bash
+pip install huggingface_hub
+hf download abccbd/TACTUS-TactusNet --include "tactusnet_gold/*" --local-dir checkpoints
+```
+
+The frozen V-JEPA 2.1 encoder is not included; get it from the official V-JEPA 2 release. [`MODEL_CARD.md`](MODEL_CARD.md) lists every file, the recipe that produced it, and the license terms of the baseline weights.
