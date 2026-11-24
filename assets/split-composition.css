@@ -21,7 +21,7 @@
 #gold-test-set .composition-tabs [aria-selected="true"] { color: white; border-bottom-color: var(--orange); }
 #gold-test-set .composition-tabs button:focus-visible { outline-offset: -3px; }
 #composition-panel:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
-#split-class-coverage, #split-sources { max-width: 850px; }
+#split-class-coverage, #split-sources, #test-pair-counts { max-width: 850px; }
 .sc-caption, #gold-test-set .sc-matrix caption {
   font-size: clamp(14px, 1.3vw, 19px);
   text-align: left;

@@ -418,28 +418,15 @@
   @media (max-width: 860px) { table.lb td.bb, table.lb th:nth-child(2) { display: none; } table.lb th, table.lb td { padding-left: calc(var(--u) * 9); padding-right: calc(var(--u) * 9); } }
 
   /* Gold test set: one point per clip, keyed to the counts in Table S11. */
-  .test-set { padding: clamp(18px, 2.4vw, 36px); scroll-margin-top: 24px; }
+  .test-set { margin-top: clamp(18px, 2.4vw, 36px); scroll-margin-top: 24px; }
   .test-set [hidden] { display: none; }
-  .test-set__head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; }
-  .test-set h3 { font-size: clamp(21px, 2.5vw, 36px); font-weight: 500; letter-spacing: -.06em; line-height: 1.15; }
   .test-set button { font: inherit; color: inherit; cursor: pointer; }
   .test-set button:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
-  .test-set__body { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(250px, 1fr); gap: clamp(16px, 2.6vw, 38px); align-items: center; }
-  .test-set__plot { background: #1c1d1a; color: #f4f2e9; padding: clamp(12px, 1.8vw, 26px); }
-  .test-set canvas { display: block; width: 100%; height: auto; aspect-ratio: 55 / 28; }
-  .test-set__unit { display: flex; gap: 8px; align-items: center; margin: 10px 0 0; font-size: clamp(11px, 1vw, 14px); }
-  .test-set__unit::before { content: ""; width: .55em; height: .55em; background: currentColor; border-radius: 50%; }
   .test-set table { width: 100%; border-collapse: collapse; font-size: clamp(12px, 1.1vw, 17px); font-variant-numeric: tabular-nums; }
   .test-set th { text-align: left; font-size: .9em; font-weight: 400; color: #50524b; }
   .test-set th, .test-set td { padding: 10px 3px; border-bottom: 1px solid #b9b9b2; }
   .test-set tr > :nth-child(n+2) { text-align: right; }
-  .test-set .test-set__name { display: inline-flex; min-height: 28px; align-items: center; gap: 8px; padding: 4px 3px; background: none; border: 0; text-align: left; }
-  @media (hover: hover) { .test-set__name:hover { text-decoration: underline; text-underline-offset: 3px; } }
-  .test-set__name::before { content: ""; width: 9px; height: 9px; flex: none; background: var(--dot); border-radius: 50%; box-shadow: 0 0 0 1px #0004; }
-  .test-set tr[data-active] { background: #d6d7cf; }
   @media (max-width: 760px) {
-    .test-set__body { grid-template-columns: minmax(0, 1fr); }
-    .test-set__head { align-items: flex-start; }
     .test-set th, .test-set td { padding-top: 7px; padding-bottom: 7px; }
   }
   /* ---------- warm palette ---------- */
@@ -514,8 +501,8 @@
   .pk--ring { border-radius: 50%; background: #9a9a9a; box-shadow: inset 0 0 0 2px #fff, 0 0 0 1px #9a9a9a; } .pk--dash { background: #9a9a9a; outline: 2px dashed #fff; outline-offset: -3px; }
 </style>
 <link rel="stylesheet" href="assets/dataset-composition.css">
-<link rel="stylesheet" href="assets/site-benchmark-splits.css">
-<link rel="stylesheet" href="assets/split-composition.css">
+<link rel="stylesheet" href="assets/site-benchmark-splits.css?v=2">
+<link rel="stylesheet" href="assets/split-composition.css?v=2">
 </head>
 <body>
 
@@ -743,36 +730,31 @@
             <figcaption class="bs-sr-only" id="bs-chart-caption" aria-live="polite">Train comprises 12,372 of 15,499 clips (79.82%) and 79 of 101 videos (78.22%).</figcaption>
           </figure>
         </div>
-      </div>
-    </section>
-    <figure class="gc-cell test-set" id="gold-test-set" aria-labelledby="test-set-title">
-      <figcaption class="test-set__head">
-        <h3 id="test-set-title">Gold test set composition</h3>
-      </figcaption>
-      <div class="composition-tabs" id="composition-mode" role="tablist" aria-label="View split composition by" hidden>
-        <button type="button" role="tab" id="composition-pair" data-view="pair" aria-controls="composition-panel" aria-selected="true">Tool–action pairs</button>
-        <button type="button" role="tab" id="composition-tool" data-view="tool" aria-controls="composition-panel" aria-selected="false" tabindex="-1">Tools</button>
-        <button type="button" role="tab" id="composition-source" data-view="source" aria-controls="composition-panel" aria-selected="false" tabindex="-1">Sources</button>
-      </div>
-      <div id="composition-panel" role="tabpanel" aria-labelledby="composition-pair" tabindex="0">
-        <div id="split-class-coverage" hidden></div>
-        <div id="split-sources" hidden></div>
-        <div class="test-set__body">
-          <div class="test-set__plot" hidden><canvas width="550" height="280" aria-hidden="true"></canvas><p class="test-set__unit">1 dot = 1 test clip</p></div>
-          <table id="test-pair-counts" aria-label="Gold test clips by tool–action pair">
-            <thead><tr><th scope="col">Tool–action pair</th><th scope="col">Clips</th><th scope="col">Share</th></tr></thead>
-            <tbody>
-              <tr data-tool="Hook" style="--dot:#ee965f"><td>Hook–dissect</td><td>1,041</td><td>68.4%</td></tr>
-              <tr data-tool="Grasper" style="--dot:#65bba8"><td>Grasper–grasp</td><td>258</td><td>16.9%</td></tr>
-              <tr data-tool="Grasper" style="--dot:#76abdd"><td>Grasper–dissect</td><td>88</td><td>5.8%</td></tr>
-              <tr data-tool="Scissors" style="--dot:#b3a3dd"><td>Scissors–dissect</td><td>46</td><td>3.0%</td></tr>
-              <tr data-tool="Scissors" style="--dot:#ddc35f"><td>Scissors–cut</td><td>33</td><td>2.2%</td></tr>
-              <tr data-tool="Clipper" style="--dot:#e68b9a"><td>Clipper–clip</td><td>57</td><td>3.7%</td></tr>
-            </tbody>
-          </table>
+        <div class="test-set" id="gold-test-set">
+          <div class="composition-tabs" id="composition-mode" role="tablist" aria-label="View split composition by" hidden>
+            <button type="button" role="tab" id="composition-pair" data-view="pair" aria-controls="composition-panel" aria-selected="true">Tool–action pairs</button>
+            <button type="button" role="tab" id="composition-tool" data-view="tool" aria-controls="composition-panel" aria-selected="false" tabindex="-1">Tools</button>
+            <button type="button" role="tab" id="composition-source" data-view="source" aria-controls="composition-panel" aria-selected="false" tabindex="-1">Sources</button>
+          </div>
+          <div id="composition-panel" role="tabpanel" aria-labelledby="composition-pair" tabindex="0">
+            <div id="split-class-coverage" hidden></div>
+            <div id="split-sources" hidden></div>
+              <table id="test-pair-counts" aria-label="Gold test clips by tool–action pair">
+                <caption class="sc-caption">Test · 1,523 clips</caption>
+                <thead><tr><th scope="col">Tool–action pair</th><th scope="col">Clips</th><th scope="col">Share</th></tr></thead>
+                <tbody>
+                  <tr data-tool="Hook" style="--dot:#ee965f"><td>Hook–dissect</td><td>1,041</td><td>68.4%</td></tr>
+                  <tr data-tool="Grasper" style="--dot:#65bba8"><td>Grasper–grasp</td><td>258</td><td>16.9%</td></tr>
+                  <tr data-tool="Grasper" style="--dot:#76abdd"><td>Grasper–dissect</td><td>88</td><td>5.8%</td></tr>
+                  <tr data-tool="Scissors" style="--dot:#b3a3dd"><td>Scissors–dissect</td><td>46</td><td>3.0%</td></tr>
+                  <tr data-tool="Scissors" style="--dot:#ddc35f"><td>Scissors–cut</td><td>33</td><td>2.2%</td></tr>
+                  <tr data-tool="Clipper" style="--dot:#e68b9a"><td>Clipper–clip</td><td>57</td><td>3.7%</td></tr>
+                </tbody>
+              </table>
+          </div>
         </div>
       </div>
-    </figure>
+    </section>
     <div class="gc-row c1"><div class="gc-cell gc-pad">
       <p class="gc-copy">TactusNet leads tool–action recognition, ActionFormer leads temporal localization, and SegFormer leads contact-region estimation.</p>
     </div></div>
@@ -909,7 +891,7 @@
 </script>
 <script src="opening.js"></script>
 <script src="assets/dataset-composition.js"></script>
-<script src="assets/site-benchmark-splits.js"></script>
-<script src="test-set.js"></script>
+<script src="assets/site-benchmark-splits.js?v=2"></script>
+<script src="assets/benchmark-composition.js"></script>
 </body>
 </html>
