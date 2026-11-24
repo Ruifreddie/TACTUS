@@ -5,7 +5,6 @@
   const tabs = Array.from(controls.querySelectorAll('[data-view]'));
   const panel = summary.querySelector('#composition-panel');
   const table = panel.querySelector('#split-counts');
-  const note = panel.querySelector('#split-count-note');
   const body = table.tBodies[0];
   const headers = table.tHead.rows[0].cells;
   const number = new Intl.NumberFormat('en-US');
@@ -15,6 +14,7 @@
   ]));
   const pairs = Array.from(body.rows, (row) => ({
     name: row.cells[0].textContent.trim(), tool: row.dataset.tool,
+    trainClips: Number(row.dataset.trainClips),
     valClips: Number(row.dataset.valClips),
     testClips: Number(row.cells[1].textContent.replaceAll(',', ''))
   }));
@@ -22,6 +22,7 @@
     const group = pairs.filter((pair) => pair.tool === name);
     return {
       name, actions: group.map((pair) => pair.name.split('–')[1]).join(' / '),
+      trainClips: group.reduce((sum, pair) => sum + pair.trainClips, 0),
       valClips: group.reduce((sum, pair) => sum + pair.valClips, 0),
       testClips: group.reduce((sum, pair) => sum + pair.testClips, 0)
     };
@@ -39,7 +40,7 @@
     const rows = bySource
       ? sourceNames.map((name, i) => ({ name, count: sourceVideos[split][i] }))
       : (view === 'pair' ? pairs : tools).map((group) => ({
-          name: group.name, actions: group.actions, count: group[split + 'Clips'] ?? null
+          name: group.name, actions: group.actions, count: group[split + 'Clips']
         }));
     const unit = bySource ? 'videos' : 'clips';
     table.caption.textContent = current.name + ' · ' + number.format(total) + ' ' + unit;
@@ -58,12 +59,9 @@
         label.append(detail);
       }
       row.append(label);
-      row.insertCell().textContent = count === null ? '—' : number.format(count);
-      row.insertCell().textContent = count === null ? '—' : (100 * count / total).toFixed(1) + '%';
+      row.insertCell().textContent = number.format(count);
+      row.insertCell().textContent = (100 * count / total).toFixed(1) + '%';
     }
-    note.hidden = rows.every((row) => row.count !== null);
-    if (note.hidden) table.removeAttribute('aria-describedby');
-    else table.setAttribute('aria-describedby', note.id);
     for (const tab of tabs) {
       const active = tab.dataset.view === view;
       tab.setAttribute('aria-selected', String(active));

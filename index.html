@@ -741,16 +741,15 @@
               <caption class="sc-caption">Test · 1,523 clips</caption>
               <thead><tr><th scope="col">Tool–action pair</th><th scope="col">Clips</th><th scope="col">Share</th></tr></thead>
               <tbody>
-                <!-- Validation supports come from val_by_combo in the released Gold semantic and temporal checkpoints. Test counts are from Table S11. -->
-                <tr data-tool="Hook" data-val-clips="1141"><th scope="row">Hook–dissect</th><td>1,041</td><td>68.4%</td></tr>
-                <tr data-tool="Grasper" data-val-clips="266"><th scope="row">Grasper–grasp</th><td>258</td><td>16.9%</td></tr>
-                <tr data-tool="Grasper" data-val-clips="102"><th scope="row">Grasper–dissect</th><td>88</td><td>5.8%</td></tr>
-                <tr data-tool="Scissors" data-val-clips="15"><th scope="row">Scissors–dissect</th><td>46</td><td>3.0%</td></tr>
-                <tr data-tool="Scissors" data-val-clips="32"><th scope="row">Scissors–cut</th><td>33</td><td>2.2%</td></tr>
-                <tr data-tool="Clipper" data-val-clips="48"><th scope="row">Clipper–clip</th><td>57</td><td>3.7%</td></tr>
+                <!-- Train counts reproduce the archived Gold export on dataset revision 119d1d266f47. Validation counts match val_by_combo in the released Gold checkpoints. Test counts are from Table S11. -->
+                <tr data-tool="Hook" data-train-clips="8186" data-val-clips="1141"><th scope="row">Hook–dissect</th><td>1,041</td><td>68.4%</td></tr>
+                <tr data-tool="Grasper" data-train-clips="2216" data-val-clips="266"><th scope="row">Grasper–grasp</th><td>258</td><td>16.9%</td></tr>
+                <tr data-tool="Grasper" data-train-clips="735" data-val-clips="102"><th scope="row">Grasper–dissect</th><td>88</td><td>5.8%</td></tr>
+                <tr data-tool="Scissors" data-train-clips="569" data-val-clips="15"><th scope="row">Scissors–dissect</th><td>46</td><td>3.0%</td></tr>
+                <tr data-tool="Scissors" data-train-clips="275" data-val-clips="32"><th scope="row">Scissors–cut</th><td>33</td><td>2.2%</td></tr>
+                <tr data-tool="Clipper" data-train-clips="391" data-val-clips="48"><th scope="row">Clipper–clip</th><td>57</td><td>3.7%</td></tr>
               </tbody>
             </table>
-            <p id="split-count-note" hidden>— Per-category clip counts are unavailable for this split.</p>
           </div>
         </div>
       </div>
@@ -892,6 +891,6 @@
 <script src="opening.js"></script>
 <script src="assets/dataset-composition.js"></script>
 <script src="assets/site-benchmark-splits.js?v=2"></script>
-<script src="assets/benchmark-composition.js?v=4"></script>
+<script src="assets/benchmark-composition.js?v=5"></script>
 </body>
 </html>
