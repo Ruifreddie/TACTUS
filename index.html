@@ -415,6 +415,36 @@
   table.lb tr:last-child td { border-bottom: 0; }
   @media (max-width: 860px) { table.lb td.bb, table.lb th:nth-child(2) { display: none; } table.lb th, table.lb td { padding-left: calc(var(--u) * 9); padding-right: calc(var(--u) * 9); } }
 
+  /* Gold test set: one point per clip, keyed to the counts in Table S11. */
+  .test-set { padding: clamp(18px, 2.4vw, 36px); scroll-margin-top: 24px; }
+  .test-set [hidden] { display: none; }
+  .test-set__head { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 14px; margin-bottom: 20px; }
+  .test-set h3 { font-size: clamp(21px, 2.5vw, 36px); font-weight: 500; letter-spacing: -.06em; line-height: 1.15; }
+  .test-set__head p { font-size: clamp(12px, 1.2vw, 16px); margin-top: .55em; }
+  .test-set__controls { display: inline-flex; border: 1px solid var(--ink); }
+  .test-set button { font: inherit; color: inherit; cursor: pointer; }
+  .test-set__controls button { font-size: clamp(12px, 1vw, 15px); background: transparent; border: 0; padding: 10px 14px; }
+  .test-set__controls button[aria-pressed="true"] { background: var(--ink); color: white; }
+  .test-set button:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+  .test-set__body { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(250px, 1fr); gap: clamp(16px, 2.6vw, 38px); align-items: center; }
+  .test-set__plot { background: #1c1d1a; color: #f4f2e9; padding: clamp(12px, 1.8vw, 26px); }
+  .test-set canvas { display: block; width: 100%; height: auto; aspect-ratio: 55 / 28; }
+  .test-set__unit { display: flex; gap: 8px; align-items: center; margin: 10px 0 0; font-size: clamp(11px, 1vw, 14px); }
+  .test-set__unit::before { content: ""; width: .55em; height: .55em; background: currentColor; border-radius: 50%; }
+  .test-set table { width: 100%; border-collapse: collapse; font-size: clamp(12px, 1.1vw, 17px); font-variant-numeric: tabular-nums; }
+  .test-set th { text-align: left; font-size: .9em; font-weight: 400; color: #50524b; }
+  .test-set th, .test-set td { padding: 10px 3px; border-bottom: 1px solid #b9b9b2; }
+  .test-set tr > :nth-child(n+2) { text-align: right; }
+  .test-set .test-set__name { display: inline-flex; min-height: 28px; align-items: center; gap: 8px; padding: 4px 3px; background: none; border: 0; text-align: left; }
+  @media (hover: hover) { .test-set__name:hover { text-decoration: underline; text-underline-offset: 3px; } }
+  .test-set__name::before { content: ""; width: 9px; height: 9px; flex: none; background: var(--dot); border-radius: 50%; box-shadow: 0 0 0 1px #0004; }
+  .test-set tr[data-active] { background: #d6d7cf; }
+  @media (max-width: 760px) {
+    .test-set__body { grid-template-columns: minmax(0, 1fr); }
+    .test-set__head { align-items: flex-start; }
+    .test-set th, .test-set td { padding-top: 7px; padding-bottom: 7px; }
+  }
+
   /* ---------- warm palette ---------- */
   .hero__tint { display: none; }   /* the page is back on the template's white-grey; orange stays as the accent only */
   .hero__media { filter: none; }                        /* ground to pure white, lines to pure black, before tinting */
@@ -760,6 +790,29 @@
       <p class="gc-copy" style="max-width:62ch;">The learned methods train on Gold. Endo-FM&rsquo;s pretraining included two of the 11 Gold test videos. The three reference baselines have no trainable parameters. When, How, and Where use the ground-truth tool and action. Shaded rows show TactusNet. Each column highlights its best value.</p>
       <div class="hero__actions"><a class="btn" href="https://github.com/Ruifreddie/TACTUS/tree/main/baselines">Run the benchmark</a><a class="btn" href="https://huggingface.co/abccbd/TACTUS-TactusNet">Get the checkpoints</a></div>
     </div></div>
+    <figure class="gc-cell test-set" id="gold-test-set" aria-labelledby="test-set-title">
+      <figcaption class="test-set__head">
+        <div><h3 id="test-set-title">Inside the Gold test set</h3><p>1,523 clips from 11 held-out videos</p></div>
+        <div class="test-set__controls" role="group" aria-label="Group clips by" hidden>
+          <button type="button" data-view="pair" aria-pressed="true">By tool–action pair</button>
+          <button type="button" data-view="tool" aria-pressed="false">By tool</button>
+        </div>
+      </figcaption>
+      <div class="test-set__body">
+        <div class="test-set__plot" hidden><canvas width="550" height="280" aria-hidden="true"></canvas><p class="test-set__unit">1 dot = 1 test clip</p></div>
+        <table aria-label="Gold test clips by tool–action pair">
+          <thead><tr><th scope="col">Tool–action pair</th><th scope="col">Clips</th><th scope="col">Share</th></tr></thead>
+          <tbody>
+            <tr data-tool="Hook" style="--dot:#ee965f"><td>Hook–dissect</td><td>1,041</td><td>68.4%</td></tr>
+            <tr data-tool="Grasper" style="--dot:#65bba8"><td>Grasper–grasp</td><td>258</td><td>16.9%</td></tr>
+            <tr data-tool="Grasper" style="--dot:#76abdd"><td>Grasper–dissect</td><td>88</td><td>5.8%</td></tr>
+            <tr data-tool="Scissors" style="--dot:#b3a3dd"><td>Scissors–dissect</td><td>46</td><td>3.0%</td></tr>
+            <tr data-tool="Scissors" style="--dot:#ddc35f"><td>Scissors–cut</td><td>33</td><td>2.2%</td></tr>
+            <tr data-tool="Clipper" style="--dot:#e68b9a"><td>Clipper–clip</td><td>57</td><td>3.7%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
   </div><div class="gc-hatch"></div></div>
 </section>
 
@@ -845,6 +898,7 @@
   })();
 </script>
 <script src="opening.js"></script>
+<script src="test-set.js"></script>
 <script>
   // Fig. 1 panels: fill in and count up once on screen; pointing at a pair in panel 1 or 3 picks it out in both
   (function () {
