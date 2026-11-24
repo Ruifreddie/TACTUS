@@ -17,7 +17,7 @@
     --gutter: calc(var(--u) * 21);
     --ink: #050505;
     --orange: #C4530B;      /* accent: 4.5:1 under white text, 3.8:1 on the page colour */
-    --line: #8A3608;        /* the kitten's scanlines */
+    --line: #8A3608;
     --paper: #e7e7e7;
     /* the 1920 x 1080 cat video is drawn with object-fit: cover; --vs is its scale */
     --vs: max(calc(100vw / 1920), calc(100vh / 1080));
@@ -51,6 +51,7 @@
     height: 100%;
     object-fit: cover;
     object-position: 62% 50%;
+    filter: url(#kitten-palette);
     z-index: -1;
     pointer-events: none;
   }
@@ -473,10 +474,6 @@
     .test-set th, .test-set td { padding-top: 7px; padding-bottom: 7px; }
   }
   /* ---------- warm palette ---------- */
-  .hero__tint { display: none; }   /* the page is back on the template's white-grey; orange stays as the accent only */
-  .hero__media { filter: none; }                        /* ground to pure white, lines to pure black, before tinting */
-  .hero__tint--screen { background: var(--line); mix-blend-mode: screen; }     /* the kitten's black scanlines turn orange */
-  .hero__tint--warm { background: var(--paper); mix-blend-mode: multiply; }            /* and the grey ground turns into the page colour */
   .sec__no, .authors__venue { background: var(--orange); color: #fff; }
   .btn:hover { background: var(--orange); }
   .bubble__cursor { background: var(--orange); }
@@ -556,8 +553,19 @@
     <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261008_131936_fe93478c-8802-4266-a258-b4f95767462c.mp4" type="video/mp4">
   </video>
 
-  <div class="hero__tint hero__tint--screen" aria-hidden="true"></div>
-  <div class="hero__tint hero__tint--warm" aria-hidden="true"></div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <!-- Grade the kitten footage only. The lightest stops preserve the neutral paper and white fur. -->
+      <filter id="kitten-palette" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feColorMatrix type="saturate" values="0"/>
+        <feComponentTransfer>
+          <feFuncR type="table" tableValues="0.0824 0.1020 0.1255 0.1725 0.2275 0.3059 0.4000 0.5098 0.6078 0.6824 0.7373 0.7686 0.8078 0.8314 0.8745 0.9373 1.0000"/>
+          <feFuncG type="table" tableValues="0.1333 0.1804 0.2431 0.3137 0.3843 0.4588 0.5216 0.5686 0.6353 0.7294 0.7725 0.7922 0.8157 0.8353 0.8745 0.9373 1.0000"/>
+          <feFuncB type="table" tableValues="0.1490 0.1961 0.2588 0.3255 0.3725 0.4275 0.4745 0.4863 0.4863 0.5216 0.6431 0.7333 0.7804 0.8196 0.8745 0.9373 1.0000"/>
+        </feComponentTransfer>
+      </filter>
+    </defs>
+  </svg>
 
   <header class="nav" id="nav">
     <a class="nav__logo" href="#" aria-label="TACTUS home">
