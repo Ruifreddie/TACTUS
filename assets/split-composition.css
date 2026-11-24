@@ -21,46 +21,22 @@
 #gold-test-set .composition-tabs [aria-selected="true"] { color: white; border-bottom-color: var(--orange); }
 #gold-test-set .composition-tabs button:focus-visible { outline-offset: -3px; }
 #composition-panel:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
-#split-class-coverage, #split-sources, #test-pair-counts { max-width: 850px; }
-.sc-caption, #gold-test-set .sc-matrix caption {
+#split-counts { max-width: 850px; table-layout: fixed; }
+#split-counts thead th:first-child { width: 54%; }
+#split-counts thead th:nth-child(2) { width: 24%; }
+#split-counts tbody th { font-size: inherit; color: var(--ink); }
+.sc-tool-actions { display: block; font-size: .9em; color: var(--bs-muted); }
+.sc-caption {
   font-size: clamp(14px, 1.3vw, 19px);
   text-align: left;
   font-weight: 500;
   margin-bottom: 12px;
 }
-#gold-test-set .sc-matrix { table-layout: fixed; }
-#gold-test-set .sc-matrix th:first-child { width: 27%; }
-#gold-test-set .sc-matrix tr > :nth-child(n+2) { text-align: center; }
-#gold-test-set .sc-matrix tbody th { color: var(--ink); font-weight: 500; }
-.sc-dot, .sc-action::before {
-  display: inline-block;
-  height: .75em;
-  width: .75em;
-  background: var(--dot);
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px #0005;
+#split-count-note {
+  margin-top: 12px;
+  font-size: clamp(12px, 1vw, 14px);
+  color: var(--bs-muted);
 }
-.sc-dash { color: #66675f; }
-.sc-tool-list, .sc-source-list { padding: 0; margin: 0; list-style: none; }
-.sc-tool-row, .sc-source-row {
-  display: grid;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid #b9b9b2;
-  font-size: clamp(13px, 1.2vw, 17px);
-}
-.sc-tool-row { grid-template-columns: minmax(5em, 27%) 1fr; }
-.sc-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
-.sc-action { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border: 1px solid #b9b9b2; }
-.sc-action::before { content: ''; }
-.sc-source-row { grid-template-columns: minmax(5em, 24%) minmax(0, 1fr) 9ch; }
-.sc-source-name { font-weight: 500; }
-.sc-track { height: 9px; background: #d5d4cc; }
-.sc-bar { display: block; height: 100%; background: #c04d12; }
-.sc-count { text-align: right; font-variant-numeric: tabular-nums; }
 @media (max-width: 540px) {
   #gold-test-set .composition-tabs button { padding: 6px 0; min-height: 42px; font-size: 12px; }
-  #gold-test-set .sc-matrix th, #gold-test-set .sc-matrix td { font-size: 12px; padding-inline: 0; }
-  .sc-source-row { grid-template-columns: 6.5ch minmax(0, 1fr) 8ch; gap: 10px; }
 }

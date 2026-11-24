@@ -417,7 +417,7 @@
   table.lb tr:last-child td { border-bottom: 0; }
   @media (max-width: 860px) { table.lb td.bb, table.lb th:nth-child(2) { display: none; } table.lb th, table.lb td { padding-left: calc(var(--u) * 9); padding-right: calc(var(--u) * 9); } }
 
-  /* Gold test set: one point per clip, keyed to the counts in Table S11. */
+  /* Benchmark composition tables for the three video-level splits. */
   .test-set { margin-top: clamp(18px, 2.4vw, 36px); scroll-margin-top: 24px; }
   .test-set [hidden] { display: none; }
   .test-set button { font: inherit; color: inherit; cursor: pointer; }
@@ -502,7 +502,7 @@
 </style>
 <link rel="stylesheet" href="assets/dataset-composition.css">
 <link rel="stylesheet" href="assets/site-benchmark-splits.css?v=2">
-<link rel="stylesheet" href="assets/split-composition.css?v=2">
+<link rel="stylesheet" href="assets/split-composition.css?v=3">
 </head>
 <body>
 
@@ -737,20 +737,19 @@
             <button type="button" role="tab" id="composition-source" data-view="source" aria-controls="composition-panel" aria-selected="false" tabindex="-1">Sources</button>
           </div>
           <div id="composition-panel" role="tabpanel" aria-labelledby="composition-pair" tabindex="0">
-            <div id="split-class-coverage" hidden></div>
-            <div id="split-sources" hidden></div>
-              <table id="test-pair-counts" aria-label="Gold test clips by tool–action pair">
-                <caption class="sc-caption">Test · 1,523 clips</caption>
-                <thead><tr><th scope="col">Tool–action pair</th><th scope="col">Clips</th><th scope="col">Share</th></tr></thead>
-                <tbody>
-                  <tr data-tool="Hook" style="--dot:#ee965f"><td>Hook–dissect</td><td>1,041</td><td>68.4%</td></tr>
-                  <tr data-tool="Grasper" style="--dot:#65bba8"><td>Grasper–grasp</td><td>258</td><td>16.9%</td></tr>
-                  <tr data-tool="Grasper" style="--dot:#76abdd"><td>Grasper–dissect</td><td>88</td><td>5.8%</td></tr>
-                  <tr data-tool="Scissors" style="--dot:#b3a3dd"><td>Scissors–dissect</td><td>46</td><td>3.0%</td></tr>
-                  <tr data-tool="Scissors" style="--dot:#ddc35f"><td>Scissors–cut</td><td>33</td><td>2.2%</td></tr>
-                  <tr data-tool="Clipper" style="--dot:#e68b9a"><td>Clipper–clip</td><td>57</td><td>3.7%</td></tr>
-                </tbody>
-              </table>
+            <table id="split-counts">
+              <caption class="sc-caption">Test · 1,523 clips</caption>
+              <thead><tr><th scope="col">Tool–action pair</th><th scope="col">Clips</th><th scope="col">Share</th></tr></thead>
+              <tbody>
+                <tr data-tool="Hook"><th scope="row">Hook–dissect</th><td>1,041</td><td>68.4%</td></tr>
+                <tr data-tool="Grasper"><th scope="row">Grasper–grasp</th><td>258</td><td>16.9%</td></tr>
+                <tr data-tool="Grasper"><th scope="row">Grasper–dissect</th><td>88</td><td>5.8%</td></tr>
+                <tr data-tool="Scissors"><th scope="row">Scissors–dissect</th><td>46</td><td>3.0%</td></tr>
+                <tr data-tool="Scissors"><th scope="row">Scissors–cut</th><td>33</td><td>2.2%</td></tr>
+                <tr data-tool="Clipper"><th scope="row">Clipper–clip</th><td>57</td><td>3.7%</td></tr>
+              </tbody>
+            </table>
+            <p id="split-count-note" hidden>— Per-category clip counts are reported only for Test.</p>
           </div>
         </div>
       </div>
@@ -892,6 +891,6 @@
 <script src="opening.js"></script>
 <script src="assets/dataset-composition.js"></script>
 <script src="assets/site-benchmark-splits.js?v=2"></script>
-<script src="assets/benchmark-composition.js"></script>
+<script src="assets/benchmark-composition.js?v=3"></script>
 </body>
 </html>
