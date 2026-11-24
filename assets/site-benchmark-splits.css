@@ -95,7 +95,7 @@
   .bs-split { margin-top: 17px; gap: 16px; }
   .bs-acc { margin-top: 14px; }
   .bs-item { height: 47px; padding-top: 11px; }
-  .bs-item.is-open { height: 65px; }
+  .bs-item.is-open { height: auto; min-height: 74px; padding-bottom: 10px; }
   .bs-card { aspect-ratio: 4 / 3; gap: 8px; }
   .bs-stat { font-size: 30px; }
 }

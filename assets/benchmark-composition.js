@@ -15,13 +15,17 @@
   ]));
   const pairs = Array.from(body.rows, (row) => ({
     name: row.cells[0].textContent.trim(), tool: row.dataset.tool,
+    valClips: Number(row.dataset.valClips),
     testClips: Number(row.cells[1].textContent.replaceAll(',', ''))
   }));
-  const tools = [...new Set(pairs.map((pair) => pair.tool))].map((name) => ({
-    name,
-    actions: pairs.filter((pair) => pair.tool === name).map((pair) => pair.name.split('–')[1]).join(' / '),
-    testClips: pairs.filter((pair) => pair.tool === name).reduce((sum, pair) => sum + pair.testClips, 0)
-  }));
+  const tools = [...new Set(pairs.map((pair) => pair.tool))].map((name) => {
+    const group = pairs.filter((pair) => pair.tool === name);
+    return {
+      name, actions: group.map((pair) => pair.name.split('–')[1]).join(' / '),
+      valClips: group.reduce((sum, pair) => sum + pair.valClips, 0),
+      testClips: group.reduce((sum, pair) => sum + pair.testClips, 0)
+    };
+  });
   const sourceNames = ['Cholec80', 'SurgVU', 'YouTube', 'HeiChole', 'CRCD'];
   const sourceVideos = { train: [24, 26, 15, 8, 6], val: [3, 3, 3, 1, 1], test: [3, 3, 3, 1, 1] };
   const viewLabels = { pair: 'Tool–action pair', tool: 'Tool', source: 'Source' };
@@ -35,7 +39,7 @@
     const rows = bySource
       ? sourceNames.map((name, i) => ({ name, count: sourceVideos[split][i] }))
       : (view === 'pair' ? pairs : tools).map((group) => ({
-          name: group.name, actions: group.actions, count: split === 'test' ? group.testClips : null
+          name: group.name, actions: group.actions, count: group[split + 'Clips'] ?? null
         }));
     const unit = bySource ? 'videos' : 'clips';
     table.caption.textContent = current.name + ' · ' + number.format(total) + ' ' + unit;
@@ -57,7 +61,7 @@
       row.insertCell().textContent = count === null ? '—' : number.format(count);
       row.insertCell().textContent = count === null ? '—' : (100 * count / total).toFixed(1) + '%';
     }
-    note.hidden = bySource || split === 'test';
+    note.hidden = rows.every((row) => row.count !== null);
     if (note.hidden) table.removeAttribute('aria-describedby');
     else table.setAttribute('aria-describedby', note.id);
     for (const tab of tabs) {
