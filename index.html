@@ -536,7 +536,7 @@
 </style>
 <link rel="stylesheet" href="assets/share-pie.css?v=1">
 <link rel="stylesheet" href="assets/dataset-composition.css?v=2">
-<link rel="stylesheet" href="assets/site-benchmark-splits.css?v=4">
+<link rel="stylesheet" href="assets/site-benchmark-splits.css?v=5">
 <link rel="stylesheet" href="assets/split-composition.css?v=4">
 </head>
 <body>
@@ -796,8 +796,10 @@
             </div>
           </div>
           <figure class="bs-card" id="bs-chart" aria-label="Gold benchmark split shares">
-            <ul class="bs-legend" aria-hidden="true">
-              <li data-name="Train" class="is-current">Train</li><li data-name="Val">Val</li><li data-name="Test">Test</li>
+            <ul class="bs-legend" aria-label="Benchmark split">
+              <li data-name="Train" class="is-current"><button type="button" aria-pressed="true" aria-controls="bs-chart composition-panel">Train</button></li>
+              <li data-name="Val"><button type="button" aria-pressed="false" aria-controls="bs-chart composition-panel">Val</button></li>
+              <li data-name="Test"><button type="button" aria-pressed="false" aria-controls="bs-chart composition-panel">Test</button></li>
             </ul>
             <div class="bs-pies" aria-hidden="true">
               <div class="bs-metric" data-metric="clips">
@@ -972,7 +974,7 @@
 <script src="opening.js"></script>
 <script src="assets/share-pie.js?v=1"></script>
 <script src="assets/dataset-composition.js?v=2"></script>
-<script src="assets/site-benchmark-splits.js?v=3"></script>
+<script src="assets/site-benchmark-splits.js?v=4"></script>
 <script src="assets/benchmark-composition.js?v=6"></script>
 </body>
 </html>

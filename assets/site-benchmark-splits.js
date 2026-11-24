@@ -14,7 +14,7 @@
   }));
   const clipTotal = groups.reduce((sum, group) => sum + group.clips, 0);
   const videoTotal = groups.reduce((sum, group) => sum + group.videos, 0);
-  const legend = [...card.querySelectorAll('.bs-legend li')];
+  const legendButtons = [...card.querySelectorAll('.bs-legend button')];
   const metrics = [...card.querySelectorAll('[data-metric]')].map((element) => ({
     key: element.dataset.metric,
     total: element.dataset.metric === 'clips' ? clipTotal : videoTotal,
@@ -42,7 +42,8 @@
     buttons.forEach((button, i) => {
       button.classList.toggle('is-open', i === index);
       button.setAttribute('aria-expanded', String(i === index));
-      legend[i].classList.toggle('is-current', i === index);
+      legendButtons[i].parentElement.classList.toggle('is-current', i === index);
+      legendButtons[i].setAttribute('aria-pressed', String(i === index));
     });
     for (const metric of metrics) {
       const count = group[metric.key];
@@ -60,22 +61,24 @@
     }));
   }
 
-  buttons.forEach((button, index) => {
+  function bindSplitButton(button, index, controls) {
     button.addEventListener('click', () => select(index));
     button.addEventListener('keydown', (event) => {
       if (event.altKey || event.ctrlKey || event.metaKey) return;
       let next;
       switch (event.key) {
-        case 'ArrowDown': case 'ArrowRight': next = (index + 1) % buttons.length; break;
-        case 'ArrowUp': case 'ArrowLeft': next = (index + buttons.length - 1) % buttons.length; break;
+        case 'ArrowDown': case 'ArrowRight': next = (index + 1) % controls.length; break;
+        case 'ArrowUp': case 'ArrowLeft': next = (index + controls.length - 1) % controls.length; break;
         case 'Home': next = 0; break;
-        case 'End': next = buttons.length - 1; break;
+        case 'End': next = controls.length - 1; break;
         default: return;
       }
       event.preventDefault();
-      buttons[next].focus({ preventScroll: true });
+      controls[next].focus({ preventScroll: true });
       select(next);
     });
-  });
+  }
+  buttons.forEach(bindSplitButton);
+  legendButtons.forEach(bindSplitButton);
   select(0);
 })();
