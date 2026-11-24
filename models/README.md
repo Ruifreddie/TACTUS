@@ -1,14 +1,18 @@
 # TactusNet
 
-TactusNet is the reference network for the five TACTUS tasks. In the default configuration it samples 16 frames from an action window, encodes them at 384 × 384 resolution with a frozen V-JEPA 2.1 ViT-L encoder, and shares the video features across three prediction heads.
+TactusNet is the reference network for the five TACTUS tasks. The default model uniformly samples 16 frames across the action window, crops them to the video's fixed content box, and resizes them to 384 × 384. Three prediction heads share the tokens from a frozen V-JEPA 2.1 ViT-L/16 encoder.
 
 | Head | Prediction |
 | --- | --- |
-| Semantic | The instrument and action, decoded as one of the six valid tool–action pairs. |
-| Temporal | The start and end of the interaction window within the action window. |
-| Spatial | Three instrument landmarks and four contact-region corners. The head first localizes the instrument in the full frame, then makes predictions on a crop. A refiner adjusts the tool landmarks at native resolution. |
+| Semantic (Which, What) | The tool scores condition the action query. The head selects the valid pair with the largest sum of tool and action logits across the six pairs. |
+| Temporal (When) | The start and end of the interaction window within the action window, conditioned on the tool and action classes. |
+| Spatial (How, Where) | Three tool landmarks and four contact corners on each sampled frame, conditioned on the tool and action classes. Full-frame tool predictions define one zoom box per clip. The encoder processes the cropped frames again for the tool and contact decoders. A refiner adjusts the tool landmarks on native-resolution image crops. |
 
-For contact-region training, TactusNet derives each sampled frame's targets from instrument-tip positions in the interaction window, using visible tips at or after that frame when available. The benchmark scores the predicted region against the human-defined tissue region on Gold test clips using direct predictions on the sampled frames, before track propagation.
+The main benchmark (Table 3) supplies the ground-truth tool and action to both localization heads. It scores How and Where directly on the 16 sampled frames before tracking. For each sampled frame, the contact decoder learns a region from visible tool-tip positions in the interaction window, using positions at or after that frame when available. The four predicted corners form a convex hull, scored against the human-defined tissue region. On 1,523 Gold test clips, the default Gold-trained model achieves 19.15 px average displacement error for tool landmarks and 0.242 contact Dice. [Evaluation protocol](../evaluation/README.md)
+
+## Spatial prompts for Silver
+
+The early Silver generator used the same four Spatial Head components with weights trained for prompt placement. The two tool decoders and the refiner trained on SurgVU alone. The contact decoder also used 5,082 Gold clips from the other sources. Human annotators supplied the classes and temporal windows. Within the interaction window, each group of points (three tool landmarks or four contact corners) used the sampled frame with its highest mean confidence. CoTracker3 propagated the seven prompts across the entire action window (Supplement B.6 and C.1).
 
 ## Code
 
@@ -19,8 +23,6 @@ For contact-region training, TactusNet derives each sampled frame's targets from
 | Contact decoder with tip-derived (default) or human-annotated targets | [`training/CONTACT_SUPERVISION.md`](../training/CONTACT_SUPERVISION.md) |
 | Other frozen encoders under the same heads | [`baselines/ablate/`](../baselines/ablate/README.md) |
 | Fine-tuning the encoder | [`baselines/ft/`](../baselines/ft/README.md) |
-
-The [evaluation protocol](../evaluation/README.md) describes the inputs and metrics used in the paper.
 
 ## Checkpoints
 

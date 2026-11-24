@@ -49,7 +49,7 @@ proves the code path.
 | backbone | ResNet-50, avg consensus | ResNet-50 + shift 1/8 blockres | ViT-B/16, tubelet 2 | CLIP ViT-B/16 + CCT, MIT, prompts | ViT-B/16 TimeSformer (div. ST) | MViTv2-S |
 | init, pretraining data | ImageNet-1k (torchvision V1; no SSv2 TSN checkpoint exists) | TSM SSv2 16-segment checkpoint (ImageNet, then SSv2) | `videomae-base-finetuned-ssv2` (SSv2 self-sup. 2400 ep, then SSv2 sup.) | `xclip-base-patch16-16-frames` (CLIP WIT-400M, then K400) | Endo-FM teacher (33K endoscopy clips, self-sup.; from SVT K400 self-sup.) | torchvision `KINETICS400_V1` (K400 sup.) |
 | frames (official) | 16 (8) | 16 (16 in the checkpoint, 8 in the example) | 16 (16) | 16 (16) | 16 (8) | 16 (16) |
-| sampling | the 16 protocol frames: uniform over the affordance window, end frames included | same | same | same | same | same |
+| sampling | the 16 protocol frames: uniform over the action window, end frames included | same | same | same | same | same |
 | input: train pre-crop -> crop; test | 256 -> 224; 224 | 256 -> 224; 224 | 256 -> 224; 224 | 256 -> 224; 224 | 320 -> 224; 224 | 320 -> 224; 224 |
 | fine-tuned / frozen | full | full; partial BN (all BN but the first frozen) | full | video side; text side frozen (FIX_TEXT) | full | full |
 | epochs | 50 | 25 | 30 | 30 | 20 | 100 |

@@ -1,8 +1,6 @@
 # Training TactusNet
 
-This directory holds the scripts and trainers used to train the TactusNet heads on TACTUS. The V-JEPA 2.1 encoder stays frozen: its tokens are computed once and cached, and every head trains on the cached tokens.
-
-No trained weights are included. Result numbers are not reported here.
+This directory holds the scripts and trainers for the default TactusNet model. The frozen V-JEPA 2.1 ViT-L/16 encodes 16 sampled frames at 384 × 384. The Semantic Head, Temporal Head, and first tool-point decoder use cached full-frame tokens. The zoomed tool-point and contact decoders use tokens cached from cropped frames. The pixel refiner trains on native-resolution image crops. The ground-truth tool and action condition the localization heads. [Trained checkpoints](../models/README.md#checkpoints)
 
 ## Layout
 
@@ -126,7 +124,7 @@ bash "$WORK/code/pipeline/run_exp.sh" B    # Gold train + Silver
 bash "$WORK/code/pipeline/run_exp.sh" C    # Silver only
 ```
 
-Val and test are the same Gold clips in all three. `run_all.sh` runs A and B only.
+All three experiments select checkpoints on the same Gold validation clips and score the same Gold test clips. The validation clips also supply the pixel refiner's error bank. Experiments B and C use the released Silver annotations as training data. The model that generated Silver prompts had its own earlier training procedure (Supplement B.6). `run_all.sh` runs A and B. [Silver generator](../models/README.md#spatial-prompts-for-silver)
 
 Every step leaves a marker file, so a re-run continues where it stopped. On one machine, run steps 3 and 4 one after the other with the same `GV` and `WORK`.
 

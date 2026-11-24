@@ -1,10 +1,8 @@
 # Where: contact-region baselines and checks
 
-Rows of Tab. 3 (c) made here, plus the contact-slot order check used by `baselines/kpt/`. Every file is scored by
-`baselines.common.score` with the paper's Where metric (Dice with the human region = `common.hull.hull_mask` of the
-visible GT contact points, frames with >= 2 of them, pooled over frames).
+This directory implements SegFormer for Table 3(c), along with two contact-supervision checks and a contact-slot ordering check. The Where metric compares each predicted region with the region formed from visible human-annotated contact points. Dice is averaged over frames with at least two visible points (Supplement D.2). For the earlier SurgVU development comparison in Supplement C.3, see the [contact-supervision guide](../../training/CONTACT_SUPERVISION.md).
 
-| Row of Tab. 3 (c) | Code | Prediction file (`$BL_OUT/...`) |
+| Method or diagnostic | Code | Prediction file (`$BL_OUT/...`) |
 |---|---|---|
 | SegFormer-B2 | `segformer.py` | `segformer/pred_{val,test}.npz`, `ct_frame_dice` (mask method) |
 | TactusNet, human-region targets | `tactus_human.sh` + `tactus_human.py` | `tactus_human/pred_{val,test}.npz`, `ct_xy` |
@@ -37,7 +35,7 @@ Single steps: `$BL_PY -m baselines.where.segformer --out $BL_OUT/segformer [--sm
 |---|---|---|---|---|---|---|---|
 | SegFormer-B2 | train: 1-fps protocol frames (`ex.frames_1fps`), official 512x512 crops; test: all 16 protocol frames at short side 512, true-pair logits upsampled to the 384x384 metric grid | encoder `nvidia/mit-b2@3bb39e8739149c3777d0325349b2a6c32c6413db` (ImageNet-1k); all-MLP decoder (768 ch) and 6-channel classifier random | official 160k iterations, poly (power 1), linear warmup 1500 (ratio 1e-6), 10 evaluations; `--max-iters` cuts it | 16 (official total) | 6e-5 x batch / 16, decoder x10 | AdamW (0.9, 0.999), wd 0.01, no decay on norms | metric region of the frame, BCE + soft Dice on the true pair's channel; frames with >= 2 visible points |
 | TactusNet, human-region targets | frozen V-JEPA 2.1 ViT-L tokens of the 16 zoomed frames (384x384), zoom boxes of experiment A | contact decoder random, encoder frozen (as C006) | 80 epochs, best by val loss (C006 recipe) | 24 on a 24 GB card (A's batch; recipe 32) | 1e-4 constant | AdamW, wd 0.05, EMA 0.999, bf16 | the 4 human contact points per frame in the zoom box (outside -> invisible): permutation-invariant point loss + region Dice (weight 60) on the region of >= 3 visible points |
-| Hindsight floor | true tool tips of every raw annotated frame of the action interval | none | none | - | - | - | it is the target: UniTAP's hotspot, rasterized in the 384x384 content-crop grid |
+| Hindsight floor | true tool tips of every raw annotated frame of the interaction window | none | none | - | - | - | it is the target: UniTAP's hotspot, rasterized in the 384x384 content-crop grid |
 
 ### SegFormer: official configuration and the TACTUS adaptations
 
@@ -115,10 +113,10 @@ rebuilt boxes, must give A's saved Dice (`results/contact_human_test.json`). Set
 ## Hindsight floor
 
 `hindsight_floor.py` re-implements UniTAP `tools/build_hindsight_labels.py` (eq. hindsight): for sampled frame t, the
-mean visible tip of every raw annotated frame of the action interval at or after t (all of them after the interval),
+mean visible tip of every raw annotated frame of the interaction window at or after t (all visible-tip frames in the window if none remain),
 Gaussian blobs of sigma 14 px at 384 along x (isotropic in native pixels, so 14 W / H px along y in the squashed grid),
 hotspot = max > 0.5, rasterized in the 384x384 content-crop grid instead of the 48x48 zoom-box grid, then scored with
-`contact_frame_dice(pred_masks=...)`. Clips without a visible tip in the action interval get an empty hotspot
+`contact_frame_dice(pred_masks=...)`. Clips without a visible tip in the interaction window get an empty hotspot
 (UniTAP: empty mask, no loss), so their frames score 0. `--iso384` (isotropic 14 px at 384) and `--tip-source export`
 (16 protocol frames only) are sensitivity variants.
 

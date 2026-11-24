@@ -1,10 +1,21 @@
 # Contact supervision
 
-The contact decoder of the Spatial Head predicts four points per sampled frame on the zoomed crop. Their convex hull is the predicted contact region. The decoder can be trained on two different targets. Both use the same trainer, the same flags, the same zoomed frames and the same cached tokens. The two recipes differ in one line: the dataset root.
+The contact decoder of the Spatial Head predicts four points per sampled frame on the zoomed crop. Their convex hull is the predicted contact region. The released recipes train the same decoder on either tip-derived targets or human tissue regions. Within a given experiment, both use the same training flags, zoomed frames, and cached tokens. The dataset root selects the target.
 
-**TactusNet uses the hindsight targets (recipe `C006`) by default.** `run_exp.sh` trains this option, and `unitap/tools/infer_pipeline.py` loads its checkpoint by default.
+**TactusNet uses tip-derived targets by default** (called *hindsight* targets in recipe `C006`). `run_exp.sh` trains this option, and `unitap/tools/infer_pipeline.py` loads its checkpoint by default.
 
-The benchmark's Where metric compares the predicted region with the human-annotated region, whichever target the decoder was trained on (see [`../evaluation/README.md`](../evaluation/README.md)).
+The benchmark's Where metric compares the direct predictions on sampled frames with human-annotated tissue regions. [Evaluation protocol](../evaluation/README.md)
+
+## Reported contact Dice
+
+| Evaluation | Training target | Dice against human tissue regions |
+| --- | --- | ---: |
+| Gold benchmark, 1,523 test clips from 11 held-out videos (Table 3) | Tip-derived, default Gold-trained TactusNet | 0.242 |
+| Earlier SurgVU development split, 417 held-out clips (Table S8) | Human regions, with 5,082 additional Gold clips from other sources | 0.421 |
+| Same development split | Human regions, SurgVU training clips only | 0.419 |
+| Same development split | Tip-derived, SurgVU training clips only | 0.232 |
+
+The earlier split used distinct time segments of the same 32 SurgVU videos, yielding 2,692 training, 419 validation, and 417 test clips. During development, some predictions from the human-target decoder enclosed only part of the instrument's activity. The tip-derived target incorporates later visible tip positions to encourage coverage from a single prompt frame before CoTracker3 propagation. The 0.232 result comes from the variant trained on the SurgVU training segments alone. The contact decoder used to generate Silver annotations also trained on 5,082 Gold clips outside SurgVU (Supplement B.6, B.7, and C.3).
 
 ## Side by side
 
@@ -15,7 +26,7 @@ The benchmark's Where metric compares the predicted region with the human-annota
 | Target | The region the instrument tips visit during the interaction window, from the current frame onward. | The four tissue points placed by annotators and tracked through the clip. |
 | Built by | `unitap/tools/build_hindsight_labels.py` | `pipeline/make_ct_root.py` |
 | Region target of the Dice loss | Precomputed soft mask `region_mask/<sid>.npy`, shape `[16, 48, 48]`. | Built in the loss from the visible human points, on frames with at least 3 of them. |
-| Point target | Four pseudo-corners derived from the mask. | The four human points. |
+| Point target | Four pseudo-corners derived from the mean and spread of the visible tip positions. | The four human points. |
 | Trained by `run_exp.sh` | Yes, step `contact`. | No. Use `baselines/where/tactus_human.sh` or the manual commands below. |
 | Checkpoint | `experiments/runs/C006/out/checkpoints/best.pt` | `experiments/runs/C006H/out/checkpoints/best.pt` (script) or `experiments/runs/C004/out/checkpoints/best.pt` (manual) |
 
@@ -93,7 +104,7 @@ The target is the human-annotated contact region: four tissue points per clip, t
 
 ### Train with the script
 
-`baselines/where/tactus_human.sh` retrains only the contact decoder on human targets, starting from a finished experiment directory. It takes the `C006` recipe, changes the dataset root to `v1_zoom_ct`, checks that this is the only changed line, trains under the run id `C006H`, dumps val and test, and runs both evaluations.
+`baselines/where/tactus_human.sh` retrains only the contact decoder on human targets, starting from a finished experiment directory. The example below uses experiment A's video-level Gold benchmark split. It takes the `C006` recipe, changes the dataset root to `v1_zoom_ct`, checks that this is the only changed line, trains under the run id `C006H`, dumps val and test, and runs both evaluations.
 
 From the repository root:
 

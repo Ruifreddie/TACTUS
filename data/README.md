@@ -25,4 +25,14 @@ The benchmark code does not read the annotation files directly. [`training/pipel
 
 ## Source terms
 
-The current dataset card describes an October 2026 annotation-tool export and labels it “Private, internal use.” Review the [dataset card](https://huggingface.co/datasets/hding2455/surgical-action-affordance/blob/main/README.md) and the terms of the original video source before reusing or redistributing clips.
+The [public release](https://huggingface.co/datasets/hding2455/surgical-action-affordance) includes clips and TACTUS annotations from all five sources. Supplement F.2 and Table S21 report the following terms for the source videos.
+
+| Video source | Terms reported in Table S21 |
+| --- | --- |
+| Cholec80 | CC BY-NC-SA 4.0 |
+| HeiChole | CC BY-NC-SA. The paper's User Notes do not specify a version and require citation of the HeiChole paper. |
+| CRCD | CC BY 4.0 |
+| SurgVU | CC BY-NC-SA 4.0 |
+| YouTube cholecystectomy collection | Terms set by the rights holder of each video. |
+
+The repository's [MIT license](../LICENSE) covers TACTUS code.

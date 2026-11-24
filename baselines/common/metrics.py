@@ -1,11 +1,10 @@
-"""The paper's metrics, implemented exactly as TactusNet computes them (UniTAP train.py / infer_pipeline.py /
-eval_contact_stage.py), plus subsets and a bootstrap over test videos.
+"""Shared benchmark metrics and video bootstrap for baseline and TactusNet predictions.
 
-Every metric is a ratio of sums, so it can be accumulated per test video and resampled by video:
+The bootstrap accumulates numerators and denominators per video. The pooled median is reported separately.
   Which / What / Pair accuracy   = correct clips / clips
   When tIoU, R@theta             = sum of tIoU (or hits) / clips with a valid interval
   How ADE                        = sum of per-clip mean errors / clips with >= 1 visible tool point  (clip, then clips)
-  How share > 32 px, median      = pooled over all visible tool points
+  How PCK, share > 32 px, median = pooled over all visible tool points
   Where Dice                     = sum of per-frame Dice / frames with >= 2 visible GT contact points (pooled frames)
 """
 from collections import defaultdict
@@ -16,7 +15,7 @@ from . import config
 from .hull import hull_mask
 
 RANGE_THRESHOLDS = (0.3, 0.5, 0.7)
-PCK_THRESHOLDS = (4, 8, 16)
+PCK_THRESHOLDS = (4, 8, 12, 16)
 
 
 # ---------------------------------------------------------------- per-clip primitives
@@ -132,8 +131,18 @@ def score_where(ex, sids, ct_xy=None, frame_dice=None):
     acc = {"dice": Acc(), "dice_ge50": Acc()}
     for i, sid in enumerate(sids):
         gt, vis = ex.contact_points(sid)
-        d = contact_frame_dice(gt, vis, pred_ct_xy=ct_xy[i]) if frame_dice is None else np.asarray(frame_dice[i], np.float64)
-        ok = ~np.isnan(d)
-        if not ok.any(): continue
-        u = ex.task(sid); acc["dice"].add(u, d[ok].sum(), ok.sum()); acc["dice_ge50"].add(u, (d[ok] >= 0.5).sum(), ok.sum())
+        if frame_dice is None:
+            scores = contact_frame_dice(gt, vis, pred_ct_xy=ct_xy[i])
+        else:
+            scores = np.asarray(frame_dice[i], np.float64)
+        eligible = (np.asarray(vis) > 0.5).sum(axis=1) >= 2
+        if scores.shape != eligible.shape:
+            raise ValueError(f"{sid}: expected one contact Dice value per sampled frame")
+        scored = scores[eligible]
+        if not ((scored >= 0) & (scored <= 1)).all():
+            raise ValueError(f"{sid}: contact Dice must be finite and in [0, 1] on every eligible frame")
+        if scored.size:
+            video = ex.task(sid)
+            acc["dice"].add(video, scored.sum(), scored.size)
+            acc["dice_ge50"].add(video, (scored >= 0.5).sum(), scored.size)
     return acc

@@ -2,7 +2,7 @@
 
 # TACTUS: Unifying Surgical Action Understanding in Time and Space
 
-**TACTUS** (Tool, Action, Contact and Trajectory Understanding in Surgery) is a dataset and benchmark for following an instrument–tissue interaction from approach through completion. Each clip ties the identity of the instrument and action to the interaction's timing, the instrument's trajectory, and the tissue region involved.
+**TACTUS** (Tool, Action, Contact and Trajectory Understanding in Surgery) is a dataset and benchmark for following an instrument–tissue interaction from approach through completion. Each clip identifies the tool and action and marks the time windows. Nearly all clips also include per-frame spatial annotations of instrument motion and tissue involvement.
 
 **[Project Page](https://ruifreddie.github.io/TACTUS/)** · **[Dataset on Hugging Face](https://huggingface.co/datasets/hding2455/surgical-action-affordance)** · **[Checkpoints](https://huggingface.co/abccbd/TACTUS-TactusNet)** · **[Annotation guide](data/README.md)** · **[TactusNet](models/README.md)** · **[Evaluation protocol](evaluation/README.md)**
 
@@ -41,6 +41,12 @@ TACTUS contains **22,995 action clips** spanning approximately **2.9 million fra
 | **Where does it act on tissue?** | Four tissue-point tracks enclosing the affected region, also with per-frame visibility. |
 
 For example, a grasper–grasp clip captures the approach, jaw closure, and retraction. The interaction window starts when the jaws begin to close and ends when the instrument stops moving after retraction. The tool landmarks describe the motion of the jaws, while the tissue points follow the region being grasped.
+
+## Benchmark results
+
+Table 3 compares TactusNet with 13 published baselines on 1,523 Gold test clips from 11 held-out videos. With per-head encoder fine-tuning, TactusNet reaches 95.8% tool–action pair accuracy and 18.68 px tool-point error at 384 × 384. ActionFormer achieves the highest temporal recall (46.6% at tIoU ≥ 0.7), and SegFormer achieves the highest Dice against human-annotated tissue regions (0.351).
+
+Table 4(c) compares training data using the default frozen-encoder TactusNet. Adding Silver to Gold training raises pair accuracy from 93.8% to 95.5% on the same Gold test set. See the [evaluation protocol](evaluation/README.md) for the split, metric definitions, and scoring commands.
 
 ## Code release
 

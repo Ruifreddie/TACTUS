@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Score a prediction file with the paper's metrics. Every row of Tab. 3 goes through this script.
+"""Score baseline or TactusNet predictions on an exported partition.
 
   python -m baselines.common.score --pred OUT/videomae/pred_test.npz [--out metrics.json] [--exclude-tasks t1,t2]
   python -m baselines.common.score --pred A.npz --compare B.npz        # paired bootstrap of A - B over test videos
 
-Reports: all test clips (the export's test list), the eight non-SurgVU test videos, per source and per pair, each with a
-95% bootstrap CI over test videos. The evaluation set is always the full export test list: a missing sid is an error.
+Reports point estimates for the selected split, non-SurgVU clips, each source and each pair.
+The all and non-SurgVU summaries include 95% video-bootstrap intervals for ratio metrics.
+Both input files must cover every clip in the selected export list.
 """
 import argparse, json, sys
 

@@ -1,15 +1,17 @@
 # TactusNet architecture package
 
-`tactusnet/` is the architecture and inference wiring of TactusNet: one frozen V-JEPA 2.1 ViT-L encoder (16 frames, 384 × 384) and the heads that read its tokens. Each layer's output conditions the next one.
+`tactusnet/` connects the TactusNet heads for inference on 16 frames sampled uniformly across an action window. The default model shares full-frame tokens from a frozen V-JEPA 2.1 ViT-L/16 encoder at 384 × 384. The predicted or supplied tool–action pair conditions both localization heads. The interaction window determines which sampled frames can seed the tracker.
 
 ```
-frames -> content crop -> encode once -> Semantic Head   Which / What   one of 6 tool-action pairs
-                                      -> Temporal Head   When           interaction interval (conditioned on the pair)
-                                      -> Spatial Head    How / Where    3 tool points + 4 contact points per sampled frame
-            seed frames -> 7 prompt points -> tracking (optional, off by default)
+content frames -> shared encoder tokens -> Semantic Head (Which / What)
+                                        -> Temporal Head (When)
+                                        -> Spatial Head, stage 1 -> zoom box
+zoomed frames  -> same encoder          -> tool decoder + native-image refiner (How)
+                                        -> contact decoder (Where)
+interaction window + point confidences  -> tool and contact seed frames -> tracking (optional)
 ```
 
-Nothing in this package trains a model. Training lives in [`training/`](../training/README.md). For the model description see [`models/README.md`](../models/README.md).
+For the model's training and evaluation recipes, see the [training guide](../training/README.md). The [model overview](../models/README.md) describes the benchmark model and the early Silver generator.
 
 Naming: the code calls the paper's **action window** the clip (`ClipSpec`, "affordance range") and the paper's **interaction window** the `action_range`. The Spatial Head code keeps its working name, UniTAP.
 
@@ -66,7 +68,7 @@ ann = model.annotate(frames_bgr16, ClipSpec(a0=14778, n=344), tool="hook", actio
 print(ann.to_json())
 ```
 
-`a0` is the absolute index of the clip's first frame and `n` its number of frames. `action_range` is given as frame indices inside the clip.
+`a0` is the absolute index of the clip's first frame and `n` its number of frames. `action_range` is given as frame indices inside the clip. Supplying the pair matches the class condition used for localization in Table 3. Supplying both the pair and the interaction window matches the inputs that annotators provided for Silver prompt placement.
 
 `<unitap_root>` must contain:
 
@@ -78,7 +80,9 @@ An experiment directory written by the training pipeline (`$WORK/exp/<E>`) has t
 
 ## Tracking
 
-The tracking stage is optional and off by default. `annotate()` only builds the 7 prompt points (3 tool points and 4 contact points on their seed frames) and returns them in `Annotation.prompt`.
+By default, `annotate()` returns direct predictions for the 16 sampled frames in `Annotation.spatial` and seven prompt points in `Annotation.prompt`. Each group (three tool points or four contact corners) uses the sampled frame with its highest mean confidence inside the interaction window. If the window contains no sampled frame, both groups use the nearest sampled frame.
+
+For dense annotation, CoTracker3 propagated the seven prompts over all frames of the action window. The benchmark scores the direct sampled-frame predictions before propagation. The benchmark uses a fixed content box per video and a 384 × 384 metric grid. `UniTAPSpatial.crop()` detects the content box from the first input frame, and `Annotation.spatial` reports positions in pixels of the original frame. [Evaluation protocol](../evaluation/README.md)
 
 Tracks are requested only when all three hold: the model was built with a tracker, `annotate(..., track=True)` is called, and a `JobRef` is passed.
 

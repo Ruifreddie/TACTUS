@@ -25,7 +25,7 @@ scripts. `$GV` is a persistent storage directory and `$WORK` a fast local disk.
 |---|---|---|
 | Which / What | one of 6 valid tool-action pairs; tool and action are read from the predicted pair | tool, action and pair accuracy; mean accuracy over the pairs |
 | When | one interval `[start, end]` on the window axis | tIoU, recall at tIoU >= 0.3 / 0.5 / 0.7 |
-| How | 3 tool points on each of the 16 protocol frames | ADE in pixels at 384 x 384, share of visible points with error > 32 px, median, PCK at 4 / 8 / 16 px |
+| How | 3 tool points on each of the 16 protocol frames | Clip-averaged ADE at 384 × 384. The median, share above 32 px, and PCK at 4, 8, 12, and 16 px pool visible points. |
 | Where | a contact region on each of the 16 protocol frames (4 points, or a mask) | Dice with the human region; share of frames with Dice >= 0.5 |
 
 The Gold benchmark has 15,499 clips: 12,372 train, 1,604 val and 1,523 test, split by video
@@ -189,7 +189,7 @@ What `score.py` does with them:
   but every frame needs a prediction for all 3 points. There is no predicted visibility.
 - `kpt`, Where: a file with `ct_xy` or `ct_frame_dice` gets a `where` block. If both are present, `ct_xy` is used.
   All 4 predicted points enter the hull. The ground-truth region is the hull of the visible human points, and only
-  frames with at least 2 of them are scored.
+  frames with at least 2 of them are scored. Each eligible frame must have a finite Dice value in `[0, 1]`.
 
 Mask methods compute `ct_frame_dice` themselves with the scorer's own function, on boolean 384 x 384 masks (the
 content crop squashed to the metric grid), as `where/segformer.py` does:
@@ -240,9 +240,9 @@ Keys of the `all` subset:
 |---|---|
 | `cls` | `which`, `what`, `pair`, `pair_macc`, `per_pair_acc` |
 | `when` | `tiou`, `r3`, `r5`, `r7`, and `fallback_rate` if the file has `fallback` |
-| `kpt` | `how`: `ade`, `gt32`, `pck4`, `pck8`, `pck16`, `median_px`; `where`: `dice`, `dice_ge50` |
+| `kpt` | `how` contains `ade`, `gt32`, `pck4`, `pck8`, `pck12`, `pck16`, and `median_px`. `where` contains `dice` and `dice_ge50`. |
 
-`--compare` needs two files of the same kind. For every metric both files have, it prints `diff` (first file minus
+`--compare` needs two files of the same kind. For each shared metric with an accumulated numerator and denominator, it prints `diff` (first file minus
 second), `ci95` and `n_units`. The bootstrap resamples the test videos the two files share, 2,000 times, and
 recomputes both rows on the same resampled videos. A CI that excludes 0 marks a difference. For `how_ade` and
 `how_gt32` lower is better, so a negative `diff` favours the first file. `--compare` always uses the full split, and
