@@ -401,6 +401,8 @@
   .open-card p { font-size: calc(var(--u) * 12.5); line-height: calc(var(--u) * 17); }
 
   table.lb { width: 100%; border-collapse: collapse; font-size: calc(var(--u) * 12); }
+  #benchmark .gc-cell:has(> table.lb) { overflow-x: auto; }
+  #benchmark .hero__actions { flex-wrap: wrap; max-width: 100%; }
   table.lb caption { text-align: left; padding: calc(var(--u) * 14) calc(var(--u) * 16) calc(var(--u) * 10); font-size: calc(var(--u) * 16); font-weight: 500; }
   table.lb caption em { font-style: normal; font-size: calc(var(--u) * 11); opacity: .6; margin-left: calc(var(--u) * 12); }
   table.lb th { text-align: right; font-weight: 500; background: var(--ink); color: #dcdcda; padding: calc(var(--u) * 9) calc(var(--u) * 16); white-space: nowrap; }
@@ -443,6 +445,38 @@
     .test-set__body { grid-template-columns: minmax(0, 1fr); }
     .test-set__head { align-items: flex-start; }
     .test-set th, .test-set td { padding-top: 7px; padding-bottom: 7px; }
+  }
+  .split-story__pin { background: var(--paper); }
+  .split-story__nav { display: flex; align-items: center; gap: 4px; padding: 12px clamp(18px, 2.4vw, 36px); border-bottom: 1px solid #a9aaa2; }
+  .split-story__nav[hidden] { display: none; }
+  .split-story__nav button { font: inherit; font-size: clamp(12px, 1.05vw, 15px); padding: 8px 12px; color: var(--ink); background: none; border: 1px solid transparent; cursor: pointer; }
+  .split-story__nav button[aria-pressed="true"] { border-color: var(--ink); }
+  .split-story__nav button:focus-visible { outline: 2px solid var(--orange); }
+  .split-story__hint { margin-left: auto; font-size: 12px; }
+  .split-story__hint::after { content: "Swipe →"; }
+  .split-story.is-pinned .split-story__hint::after { content: "Scroll ↓"; }
+  .split-story.is-ready .split-story__viewport { overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
+  .split-story.is-ready .split-story__track { display: flex; }
+  .split-story.is-ready .split-story__track > * { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; }
+  .split-story.is-pinned { min-height: calc(var(--panel-height) + var(--slide-travel)); }
+  .split-story.is-pinned .split-story__pin { position: sticky; top: var(--pin-top); }
+  .split-story.is-pinned .split-story__viewport { overflow-x: hidden; scroll-snap-type: none; }
+  .split-overview { padding: clamp(18px, 2.4vw, 36px); }
+  .split-overview h3 { font-weight: 500; font-size: clamp(21px, 2.5vw, 36px); letter-spacing: -.06em; }
+  .split-overview > p { margin-top: 7px; font-size: clamp(12px, 1.15vw, 16px); line-height: 1.5; }
+  .split-overview__grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: clamp(10px, 2vw, 24px); margin-top: 18px; }
+  .split-overview figure { background: #1c1d1a; color: #f4f2e9; padding: clamp(12px, 1.8vw, 24px); }
+  .split-overview figcaption { display: flex; gap: 12px; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .split-overview figcaption b { font-size: clamp(20px, 2.6vw, 38px); font-weight: 500; letter-spacing: -.06em; }
+  .split-overview figcaption span { font-size: clamp(12px, 1.1vw, 16px); }
+  .split-overview canvas { display: block; width: 100%; aspect-ratio: 58/28; height: auto; }
+  .split-overview__grid + p { display: flex; align-items: center; gap: 8px; }
+  .split-overview__grid + p::before { content: ""; width: .55em; height: .55em; border-radius: 50%; background: currentColor; }
+  @media (max-width: 600px) {
+    .split-overview__grid { grid-template-columns: 1fr; }
+    .split-story__nav { gap: 0; }
+    .split-story__nav button { padding: 8px; }
+    .split-story__hint { font-size: 11px; }
   }
 
   /* ---------- warm palette ---------- */
@@ -790,6 +824,23 @@
       <p class="gc-copy" style="max-width:62ch;">The learned methods train on Gold. Endo-FM&rsquo;s pretraining included two of the 11 Gold test videos. The three reference baselines have no trainable parameters. When, How, and Where use the ground-truth tool and action. Shaded rows show TactusNet. Each column highlights its best value.</p>
       <div class="hero__actions"><a class="btn" href="https://github.com/Ruifreddie/TACTUS/tree/main/baselines">Run the benchmark</a><a class="btn" href="https://huggingface.co/abccbd/TACTUS-TactusNet">Get the checkpoints</a></div>
     </div></div>
+    <div class="gc-cell split-story" id="benchmark-distribution">
+      <div class="split-story__pin">
+        <div class="split-story__nav" role="group" aria-label="Benchmark distribution views" hidden>
+          <button type="button" aria-pressed="true" aria-controls="held-out-splits">Split sizes</button>
+          <button type="button" aria-pressed="false" aria-controls="gold-test-set">Test breakdown</button>
+          <span class="split-story__hint" aria-hidden="true"></span>
+        </div>
+        <div class="split-story__viewport"><div class="split-story__track">
+          <section class="split-overview" id="held-out-splits" aria-labelledby="split-title">
+            <h3 id="split-title">Validation and test</h3>
+            <p>The Gold benchmark uses 15,499 clips. Training accounts for 12,372 clips from 79 videos.</p>
+            <div class="split-overview__grid">
+              <figure><figcaption><b>1,604</b><span>Validation · 11 videos</span></figcaption><canvas width="580" height="280" aria-hidden="true" data-color="#76abdd"></canvas></figure>
+              <figure><figcaption><b>1,523</b><span>Test · 11 videos</span></figcaption><canvas width="580" height="280" aria-hidden="true" data-color="#ee965f"></canvas></figure>
+            </div>
+            <p>1 dot = 1 clip</p>
+          </section>
     <figure class="gc-cell test-set" id="gold-test-set" aria-labelledby="test-set-title">
       <figcaption class="test-set__head">
         <div><h3 id="test-set-title">Inside the Gold test set</h3><p>1,523 clips from 11 held-out videos</p></div>
@@ -813,6 +864,9 @@
         </table>
       </div>
     </figure>
+        </div></div>
+      </div>
+    </div>
   </div><div class="gc-hatch"></div></div>
 </section>
 
@@ -899,6 +953,7 @@
 </script>
 <script src="opening.js"></script>
 <script src="test-set.js"></script>
+<script src="benchmark-slides.js"></script>
 <script>
   // Fig. 1 panels: fill in and count up once on screen; pointing at a pair in panel 1 or 3 picks it out in both
   (function () {
