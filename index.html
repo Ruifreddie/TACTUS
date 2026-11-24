@@ -315,13 +315,21 @@
     position: absolute; left: var(--gutter); top: calc(23.1% + var(--u) * 102);
     font-size: calc(var(--u) * 17); line-height: calc(var(--u) * 23); letter-spacing: -0.01em; font-weight: 500;
   }
-  /* where the opening mosaic lands: a pixel-bordered square, like the speech bubble */
+  /* where the opening square lands: its five rows fold into five small cards, one per question */
   .mosaic-slot {
-    --b: max(2px, calc(var(--u) * 2));
-    position: absolute; left: calc(var(--u) * 492); top: 23.1%;
-    width: calc(var(--u) * 140); height: calc(var(--u) * 140);
-    box-shadow: 0 calc(var(--b) * -1) 0 0 var(--ink), 0 var(--b) 0 0 var(--ink), calc(var(--b) * -1) 0 0 0 var(--ink), var(--b) 0 0 0 var(--ink);
+    --b: max(2px, calc(var(--u) * 2)); --c: calc(var(--u) * 62);
+    position: absolute; left: var(--gutter); top: calc(82.6% + var(--u) * 14);
+    display: flex; gap: calc(var(--u) * 12);
   }
+  @font-face { font-family: "DynaPuff"; src: url("fonts/DynaPuff.ttf"); font-weight: 400 700; font-display: swap; }
+  .q-card { width: var(--c); font-family: "DynaPuff", sans-serif; font-weight: 500; font-size: calc(var(--u) * 10.5); line-height: 1; text-align: center; white-space: nowrap; }
+  .q-card i { display: block; width: var(--c); height: var(--c); margin-bottom: calc(var(--u) * 8);
+    box-shadow: 0 calc(var(--b) * -1) 0 0 var(--ink), 0 var(--b) 0 0 var(--ink), calc(var(--b) * -1) 0 0 0 var(--ink), var(--b) 0 0 0 var(--ink); }
+  .q-card span { display: inline-block; margin: 0 -1em; }
+  /* fan: the five cards are held like a hand of cards (add ?fan to the address; the default is a straight row) */
+  .mosaic-slot.fan { --c: calc(var(--u) * 70); gap: 0; top: calc(82.6% + var(--u) * 12); left: calc(var(--gutter) + var(--u) * 34); }
+  .mosaic-slot.fan .q-card { margin-right: calc(var(--u) * -20); transform-origin: 50% 160%; transform: rotate(calc((var(--i) - 2) * 9deg)); }
+  .mosaic-slot.fan .q-card span { display: none; }
   #opening { height: 230vh; position: relative; }
   #opening .hero { position: sticky; top: 0; }
   #scene { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
@@ -330,7 +338,9 @@
   .rest { background: var(--paper); padding: calc(var(--u) * 80) var(--gutter); font-size: calc(var(--u) * 13); min-height: 60vh; }
   @media (max-width: 720px) {
     .hero__paper { top: calc(var(--u) * 92 + var(--u) * 80); font-size: calc(var(--u) * 15); line-height: calc(var(--u) * 20); }
-    .mosaic-slot { left: auto; right: var(--gutter); top: calc(var(--u) * 78); width: calc(var(--u) * 70); height: calc(var(--u) * 70); }
+    .mosaic-slot, .mosaic-slot.fan { --c: calc(var(--u) * 30); top: calc(var(--u) * 224); left: var(--gutter); gap: calc(var(--u) * 6); }
+    .mosaic-slot.fan .q-card { margin-right: 0; transform: none; }
+    .q-card span { display: none; }
   }
   /* ---------- sections below the hero: page order after academic project pages, frames after the Gridcore template ---------- */
   .sec { background: var(--paper); padding: calc(var(--u) * 70) var(--gutter) 0; }
@@ -348,7 +358,8 @@
   .gc-logo { display: flex; align-items: center; justify-content: center; height: calc(var(--u) * 58); font-size: calc(var(--u) * 13); font-weight: 500; }
   .gc-card { padding: 0 calc(var(--u) * 18) calc(var(--u) * 18); display: flex; flex-direction: column; }
   .gc-well { display: flex; align-items: center; justify-content: center; padding: calc(var(--u) * 18) 0 calc(var(--u) * 14); }
-  .gc-well img { max-width: 100%; height: auto; display: block; }
+  .gc-well img, .gc-well video { max-width: 100%; height: auto; display: block; }
+  .gc-well video { width: calc(100% - var(--u) * 32); }
   .gc-well.tall img { max-height: calc(var(--u) * 190); width: auto; }
   .gc-num { font-size: calc(var(--u) * 11); opacity: .55; margin-bottom: calc(var(--u) * 6); }
   .gc-title { font-size: calc(var(--u) * 17); font-weight: 500; letter-spacing: -0.02em; margin-bottom: calc(var(--u) * 8); }
@@ -384,6 +395,10 @@
     background: rgba(5, 5, 5, .72); padding: calc(var(--u) * 30) calc(var(--u) * 38); text-align: center; color: #ececea; backdrop-filter: blur(3px); }
   .open-card svg { display: block; width: calc(var(--u) * 330); height: auto; fill: #ececea; margin: 0 auto calc(var(--u) * 16); }
   .open-card p { font-size: calc(var(--u) * 15); line-height: calc(var(--u) * 21); }
+  /* the title card sits above the annotated square instead of covering it */
+  .open-card { top: 2.5vh; transform: translateX(-50%); padding: calc(var(--u) * 12) calc(var(--u) * 28); width: max-content; max-width: calc(100% - var(--gutter) * 2); }
+  .open-card svg { width: min(calc(var(--u) * 230), 100%); margin-bottom: calc(var(--u) * 8); }
+  .open-card p { font-size: calc(var(--u) * 12.5); line-height: calc(var(--u) * 17); }
 
   table.lb { width: 100%; border-collapse: collapse; font-size: calc(var(--u) * 12); }
   table.lb caption { text-align: left; padding: calc(var(--u) * 14) calc(var(--u) * 16) calc(var(--u) * 10); font-size: calc(var(--u) * 16); font-weight: 500; }
@@ -430,15 +445,28 @@
     background: var(--paper); color: var(--ink);
     box-shadow: 0 calc(var(--b) * -1) 0 0 var(--ink), 0 var(--b) 0 0 var(--ink), calc(var(--b) * -1) 0 0 0 var(--ink), var(--b) 0 0 0 var(--ink),
                 calc(var(--u) * 5) calc(var(--u) * 5) 0 0 var(--ink);
-    opacity: .78; transition: opacity .15s, background-color .12s, color .12s;
+    opacity: .78; transition: opacity .15s, background-color .12s, color .12s, transform .55s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .12s;
+    transform: translateY(calc(var(--s, 0) * (var(--ih) + var(--gap))));     /* --s: how many slots this link is moved from its own place */
   }
   .paw-item:hover, .paw-item:focus-visible, .paw-item.is-active { opacity: 1; }
   .paw-item:focus-visible { outline: 2px solid var(--orange); outline-offset: 5px; }
-  .paw-item::after { content: ""; margin-left: calc(var(--u) * 10); width: calc(var(--u) * 7); height: calc(var(--u) * 7); background: var(--orange); visibility: hidden; }
+  .paw-item { --tone: var(--orange); }
+  .paw-item[data-tone="data"] { --tone: #0B7F8C; }
+  .paw-item[data-tone="weights"] { --tone: #8A5A00; }
+  .paw-item::after { content: ""; margin-left: calc(var(--u) * 10); width: calc(var(--u) * 7); height: calc(var(--u) * 7); background: var(--tone); visibility: hidden; }
   .paw-item.is-active::after { visibility: visible; }
-  .paw-item.is-tapped { background: var(--orange); color: #fff; }
+  /* pressed by the paw: the button sinks into its shadow */
+  .paw-item.is-tapped { background: var(--tone); color: #fff; transition-duration: .15s, .12s, .12s, .09s, .09s;
+    transform: translate(calc(var(--u) * 4), calc(var(--s, 0) * (var(--ih) + var(--gap)) + var(--u) * 4));
+    box-shadow: 0 calc(var(--b) * -1) 0 0 var(--ink), 0 var(--b) 0 0 var(--ink), calc(var(--b) * -1) 0 0 0 var(--ink), var(--b) 0 0 0 var(--ink), calc(var(--u) * 1) calc(var(--u) * 1) 0 0 var(--ink); }
   .paw-item.is-tapped::after { background: #fff; }
   .bubble.is-tap { background: #fff; }
+  /* the bubble says which of the three links it is talking about: number, name and colour */
+  .bubble { --tone: var(--orange); }
+  .bubble[data-tone="data"] { --tone: #0B7F8C; }
+  .bubble[data-tone="weights"] { --tone: #8A5A00; }
+  .bubble__tag { display: inline-block; margin-right: calc(var(--u) * 9); padding: 0 calc(var(--u) * 6); background: var(--tone); color: #fff; font-size: calc(var(--u) * 10.5); letter-spacing: .04em; vertical-align: calc(var(--u) * 1); transition: background-color .15s; }
+  .bubble .bubble__cursor { background: var(--tone); }
   .hero__body .hero__actions { display: none; }          /* the links moved to the paw */
   .hero__lede { margin-bottom: calc(var(--u) * 6); }
   @media (max-width: 720px) {
@@ -452,6 +480,51 @@
   .paw-item:not(.is-active) { color: rgba(5, 5, 5, .8); }
   .gc-copy { opacity: .8; } .sec__sub { opacity: .7; } .gc-num { opacity: .7; } table.lb td.bb { opacity: .72; } table.lb tr.floor td { opacity: .62; }
   .authors__aff { opacity: .8; }
+
+  /* ---------- the paper's Fig. 1 as live content: four panels that fill in when they scroll into view ---------- */
+  .ov { --gold: #E0791F; --silver: #4F7FC4; }
+  .ov__p { padding: calc(var(--u) * 20) calc(var(--u) * 24) calc(var(--u) * 22); font-size: calc(var(--u) * 12); }
+  .ov__t { display: flex; align-items: baseline; gap: .6em; font-size: calc(var(--u) * 15); font-weight: 500; margin-bottom: calc(var(--u) * 14); flex-wrap: wrap; }
+  .ov__t > span:first-child { display: inline-flex; align-items: center; justify-content: center; width: 1.5em; height: 1.5em; background: var(--ink); color: #fff; font-size: .78em; align-self: center; }
+  .ov__t > span:first-child:empty, .ov__t > span:first-child:not(:empty):has(+ em) { }
+  .ov__t em { font-style: normal; font-weight: 400; font-size: calc(var(--u) * 11.5); opacity: .65; }
+  .ov__key { margin-left: auto; display: inline-flex; align-items: center; gap: .45em; font-size: calc(var(--u) * 11.5); font-weight: 400; }
+  .ov__key i { display: inline-block; width: 1.1em; height: 1.1em; margin-left: .7em; } .ov i.g { background: var(--gold); } .ov i.s { background: var(--silver); }
+  /* matrices (panels 1 and 2) */
+  .mx { display: grid; gap: calc(var(--u) * 5); align-items: stretch; }
+  .mx--pairs { grid-template-columns: 5.5em repeat(4, 1fr); } .mx--vis { grid-template-columns: 5.5em repeat(3, 1fr); }
+  .mx__h { text-align: center; font-weight: 500; padding-bottom: calc(var(--u) * 2); } .mx__l { font-weight: 500; text-align: right; padding-right: .6em; align-self: center; }
+  .mx__c { position: relative; height: calc(var(--u) * 30); display: flex; align-items: center; justify-content: center; opacity: .45; font-variant-numeric: tabular-nums; }
+  .mx__c.is-on { opacity: 1; cursor: default; background: rgba(5, 5, 5, calc(.05 + var(--k) * .12)); transform: scale(.6); opacity: 0; transition: transform .45s cubic-bezier(.3, 1.5, .5, 1), opacity .3s, box-shadow .15s; }
+  .in .mx__c.is-on { transform: none; opacity: 1; }
+  .mx__c.is-on b { font-weight: 500; }
+  .mx__c.vis { opacity: 1; background: rgba(5, 5, 5, .06); overflow: hidden; }
+  .mx__c.vis i { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--v) * 1%); background: var(--gold); opacity: calc(.25 + var(--v) / 160); transform-origin: 0 50%; transform: scaleX(0); transition: transform 1s steps(18, end); }
+  .in .mx__c.vis i { transform: none; } .mx__c.vis b { position: relative; font-weight: 500; }
+  /* sources x pairs (panel 3) */
+  .sp { display: grid; grid-template-columns: 6em repeat(6, 1fr); column-gap: calc(var(--u) * 14); row-gap: calc(var(--u) * 7); align-items: center; }
+  .sp__h { font-weight: 500; line-height: 1.25; padding-bottom: calc(var(--u) * 4); } .sp__l { font-weight: 500; text-align: right; }
+  .sp__r { display: grid; grid-template-columns: 3.2em 1fr; align-items: center; gap: .5em; height: calc(var(--u) * 14); }
+  .sp__r em { font-style: normal; text-align: right; font-variant-numeric: tabular-nums; }
+  .sp__r i { display: block; height: calc(var(--u) * 9); width: calc(var(--v) * 1%); transform-origin: 0 50%; transform: scaleX(0); transition: transform .8s steps(14, end); }
+  .in .sp__r i { transform: none; }
+  .sp__c, .sp__h { transition: opacity .15s; } .ov.dim [data-pair]:not(.hot) { opacity: .28; } .mx__c.is-on.hot { box-shadow: inset 0 0 0 2px var(--orange); }
+  /* histograms (panel 4) */
+  .hg__bars { position: relative; display: flex; align-items: flex-end; height: calc(var(--u) * 96); border-bottom: 1px solid var(--ink); }
+  .hg__bars > span { position: relative; flex: 1; height: 100%; }
+  .hg__bars i { position: absolute; left: 0; right: 0; bottom: 0; transform-origin: 50% 100%; transform: scaleY(0); transition: transform .7s cubic-bezier(.2, .9, .3, 1) var(--d); }
+  .hg__bars i.g { height: calc(var(--g) * 1%); opacity: .8; } .hg__bars i.s { height: calc(var(--s) * 1%); opacity: .55; }
+  .in .hg__bars i { transform: none; }
+  .hg__bars u { position: absolute; top: 0; bottom: 0; width: 2px; opacity: 0; transition: opacity .4s 1s; } .hg__bars u.g { background: var(--gold); } .hg__bars u.s { background: var(--silver); } .in .hg__bars u { opacity: 1; }
+  .hg__ax { position: relative; height: 1.6em; font-size: calc(var(--u) * 11); opacity: .7; } .hg__ax span { position: absolute; top: .3em; transform: translateX(-50%); white-space: nowrap; }
+  .hg__med { display: flex; gap: 1.4em; font-weight: 500; margin-top: calc(var(--u) * 4); } .hg__med .g { color: var(--gold); } .hg__med .s { color: var(--silver); }
+  @media (max-width: 860px) { .sp { grid-template-columns: 4.6em repeat(6, minmax(5.6em, 1fr)); min-width: 46em; } .ov__p { overflow-x: auto; } }
+  @media (prefers-reduced-motion: reduce) { .ov i, .mx__c.is-on { transform: none !important; transition: none !important; opacity: 1; } }
+
+  /* prediction clips: the small keys in the caption */
+  .pk { display: inline-block; width: .85em; height: .85em; margin: 0 .35em 0 .1em; vertical-align: -.08em; }
+  .pk--dot { border-radius: 50%; background: #FF3D00; box-shadow: 0 0 0 1px var(--ink); } .pk--reg { background: rgba(0, 229, 255, .45); box-shadow: inset 0 0 0 2px #00C8E0; }
+  .pk--ring { border-radius: 50%; background: #9a9a9a; box-shadow: inset 0 0 0 2px #fff, 0 0 0 1px #9a9a9a; } .pk--dash { background: #9a9a9a; outline: 2px dashed #fff; outline-offset: -3px; }
 </style>
 </head>
 <body>
@@ -493,16 +566,16 @@
   </h1>
 
   <p class="hero__paper">Unifying Surgical Action Understanding<br>in Time and Space</p>
-  <div class="mosaic-slot" id="mosaicSlot" aria-hidden="true"></div>
+  <div class="mosaic-slot" id="mosaicSlot" aria-hidden="true"><div class="q-card" style="--i:0"><i></i><span>Which tool</span></div><div class="q-card" style="--i:1"><i></i><span>What action</span></div><div class="q-card" style="--i:2"><i></i><span>When</span></div><div class="q-card" style="--i:3"><i></i><span>How</span></div><div class="q-card" style="--i:4"><i></i><span>Where</span></div></div>
 
-  <p class="bubble" id="bubble" aria-hidden="true"><span id="bubbleText">Purr! Want the code?</span><span class="bubble__cursor" aria-hidden="true"></span>
+  <p class="bubble" id="bubble" aria-hidden="true"><span class="bubble__tag" id="bubbleTag">1/3 CODE</span><span id="bubbleText">Purr! Want the code?</span><span class="bubble__cursor" aria-hidden="true"></span>
     <svg class="bubble__tail" viewBox="0 0 6 6" shape-rendering="crispEdges" aria-hidden="true"><path fill="#e7e7e7" d="M1 0h4v1h-1v1h-1v1h-1v1h-1z"/><path fill="#050505" d="M0 0h1v5h-1zM1 4h1v1h-1zM2 3h1v1h-1zM3 2h1v1h-1zM4 1h1v1h-1zM5 0h1v1h-1z"/></svg>
   </p>
 
   <nav class="paw-menu" id="pawMenu" aria-label="Project links">
-    <a class="paw-item" href="https://github.com/Ruifreddie/TACTUS" data-idle="Purr! Want the code?" data-tap="Tap! Code on GitHub."><span>Get the Code</span></a>
-    <a class="paw-item" href="https://huggingface.co/datasets/hding2455/surgical-action-affordance" data-idle="The dataset? This way." data-tap="Tap! 22,995 clips."><span>Dataset</span></a>
-    <a class="paw-item" href="https://huggingface.co/abccbd/TACTUS-TactusNet" data-idle="Trained weights, too." data-tap="Tap! 34 checkpoints."><span>Checkpoints</span></a>
+    <a class="paw-item" href="https://github.com/Ruifreddie/TACTUS" data-tone="code" data-tag="1/3 CODE" data-idle="Purr! Want the code?" data-tap="Tap! Code on GitHub."><span>Get the Code</span></a>
+    <a class="paw-item" href="https://huggingface.co/datasets/hding2455/surgical-action-affordance" data-tone="data" data-tag="2/3 DATA" data-idle="The dataset? This way." data-tap="Tap! 22,995 clips."><span>Dataset</span></a>
+    <a class="paw-item" href="https://huggingface.co/abccbd/TACTUS-TactusNet" data-tone="weights" data-tag="3/3 WEIGHTS" data-idle="Trained weights, too." data-tap="Tap! 34 checkpoints."><span>Checkpoints</span></a>
   </nav>
 
   <div class="hero__body">
@@ -552,14 +625,14 @@
   <div class="sec__head"><span class="sec__no">02</span><h2 class="sec__title">Clips</h2><span class="sec__sub">One Gold clip per tool&ndash;action pair, drawn from its annotation</span></div>
   <div class="gc rv"><div class="gc-hatch"></div><div class="gc-frame">
     <div class="gc-row c3">
-      <div class="gc-cell gc-well"><img src="assets/hook_dissect.gif" alt="hook, dissect" loading="lazy"></div>
-      <div class="gc-cell gc-well"><img src="assets/grasper_grasp.gif" alt="grasper, grasp" loading="lazy"></div>
-      <div class="gc-cell gc-well"><img src="assets/clipper_clip.gif" alt="clipper, clip" loading="lazy"></div>
+      <div class="gc-cell gc-well"><video src="assets/hook_dissect.mp4" poster="assets/hook_dissect.jpg" aria-label="hook, dissect" autoplay loop muted playsinline preload="metadata"></video></div>
+      <div class="gc-cell gc-well"><video src="assets/grasper_grasp.mp4" poster="assets/grasper_grasp.jpg" aria-label="grasper, grasp" autoplay loop muted playsinline preload="metadata"></video></div>
+      <div class="gc-cell gc-well"><video src="assets/clipper_clip.mp4" poster="assets/clipper_clip.jpg" aria-label="clipper, clip" autoplay loop muted playsinline preload="metadata"></video></div>
     </div>
     <div class="gc-row c3">
-      <div class="gc-cell gc-well"><img src="assets/scissors_cut.gif" alt="scissors, cut" loading="lazy"></div>
-      <div class="gc-cell gc-well"><img src="assets/grasper_dissect.gif" alt="grasper, dissect" loading="lazy"></div>
-      <div class="gc-cell gc-well"><img src="assets/scissors_dissect.gif" alt="scissors, dissect" loading="lazy"></div>
+      <div class="gc-cell gc-well"><video src="assets/scissors_cut.mp4" poster="assets/scissors_cut.jpg" aria-label="scissors, cut" autoplay loop muted playsinline preload="metadata"></video></div>
+      <div class="gc-cell gc-well"><video src="assets/grasper_dissect.mp4" poster="assets/grasper_dissect.jpg" aria-label="grasper, dissect" autoplay loop muted playsinline preload="metadata"></video></div>
+      <div class="gc-cell gc-well"><video src="assets/scissors_dissect.mp4" poster="assets/scissors_dissect.jpg" aria-label="scissors, dissect" autoplay loop muted playsinline preload="metadata"></video></div>
     </div>
   </div><div class="gc-hatch"></div></div>
 </section>
@@ -590,6 +663,17 @@
       <div class="gc-cell gc-stat"><b>6</b><span>tool&ndash;action pairs</span></div>
       <div class="gc-cell gc-stat"><b>5</b><span>benchmark questions</span></div>
     </div>
+    <div class="gc-row c2 stack ov">
+      <div class="gc-cell ov__p"><p class="ov__t"><span>1</span>Six tool&ndash;action pairs <em>clips</em></p><div class="mx mx--pairs"><span></span><span class="mx__h">dissect</span><span class="mx__h">grasp</span><span class="mx__h">clip</span><span class="mx__h">cut</span><span class="mx__l">hook</span><span class="mx__c is-on" data-pair="0" style="--k:1.000"><b data-n="13729">0</b></span><span class="mx__c">&ndash;</span><span class="mx__c">&ndash;</span><span class="mx__c">&ndash;</span><span class="mx__l">grasper</span><span class="mx__c is-on" data-pair="3" style="--k:0.766"><b data-n="1479">0</b></span><span class="mx__c is-on" data-pair="1" style="--k:0.876"><b data-n="4228">0</b></span><span class="mx__c">&ndash;</span><span class="mx__c">&ndash;</span><span class="mx__l">scissors</span><span class="mx__c is-on" data-pair="2" style="--k:0.814"><b data-n="2338">0</b></span><span class="mx__c">&ndash;</span><span class="mx__c">&ndash;</span><span class="mx__c is-on" data-pair="5" style="--k:0.672"><b data-n="603">0</b></span><span class="mx__l">clipper</span><span class="mx__c">&ndash;</span><span class="mx__c">&ndash;</span><span class="mx__c is-on" data-pair="4" style="--k:0.675"><b data-n="618">0</b></span><span class="mx__c">&ndash;</span></div></div>
+      <div class="gc-cell ov__p"><p class="ov__t"><span>2</span>Visible points <em>% of Gold frames</em></p><div class="mx mx--vis"><span></span><span class="mx__h">tool tip</span><span class="mx__h">tool anchor</span><span class="mx__h">contact</span><span class="mx__l">hook</span><span class="mx__c vis" style="--v:76"><i></i><b data-n="76" data-suffix="%">0%</b></span><span class="mx__c vis" style="--v:71"><i></i><b data-n="71" data-suffix="%">0%</b></span><span class="mx__c vis" style="--v:94"><i></i><b data-n="94" data-suffix="%">0%</b></span><span class="mx__l">grasper</span><span class="mx__c vis" style="--v:47"><i></i><b data-n="47" data-suffix="%">0%</b></span><span class="mx__c vis" style="--v:65"><i></i><b data-n="65" data-suffix="%">0%</b></span><span class="mx__c vis" style="--v:90"><i></i><b data-n="90" data-suffix="%">0%</b></span><span class="mx__l">scissors</span><span class="mx__c vis" style="--v:64"><i></i><b data-n="64" data-suffix="%">0%</b></span><span class="mx__c vis" style="--v:73"><i></i><b data-n="73" data-suffix="%">0%</b></span><span class="mx__c vis" style="--v:94"><i></i><b data-n="94" data-suffix="%">0%</b></span><span class="mx__l">clipper</span><span class="mx__c vis" style="--v:42"><i></i><b data-n="42" data-suffix="%">0%</b></span><span class="mx__c vis" style="--v:56"><i></i><b data-n="56" data-suffix="%">0%</b></span><span class="mx__c vis" style="--v:82"><i></i><b data-n="82" data-suffix="%">0%</b></span></div></div>
+    </div>
+    <div class="gc-row c1 ov">
+      <div class="gc-cell ov__p"><p class="ov__t"><span>3</span>Sources and tool&ndash;action pairs <em>clips, log scale</em><span class="ov__key"><i class="g"></i>Gold <i class="s"></i>Silver</span></p><div class="sp"><span></span><span class="sp__h" data-pair="0">hook<br>dissect</span><span class="sp__h" data-pair="1">grasper<br>grasp</span><span class="sp__h" data-pair="2">scissors<br>dissect</span><span class="sp__h" data-pair="3">grasper<br>dissect</span><span class="sp__h" data-pair="4">clipper<br>clip</span><span class="sp__h" data-pair="5">scissors<br>cut</span><span class="sp__l">Cholec80</span><span class="sp__c" data-pair="0"><span class="sp__r"><em>4,739</em><i class="g" style="--v:88.8"></i></span></span><span class="sp__c" data-pair="1"><span class="sp__r"><em>933</em><i class="g" style="--v:71.8"></i></span></span><span class="sp__c" data-pair="2"><span class="sp__r"><em>12</em><i class="g" style="--v:26.1"></i></span></span><span class="sp__c" data-pair="3"><span class="sp__r"><em>43</em><i class="g" style="--v:39.5"></i></span></span><span class="sp__c" data-pair="4"><span class="sp__r"><em>186</em><i class="g" style="--v:54.9"></i></span></span><span class="sp__c" data-pair="5"><span class="sp__r"><em>145</em><i class="g" style="--v:52.2"></i></span></span><span class="sp__l">SurgVU</span><span class="sp__c" data-pair="0"><span class="sp__r"><em>2,688</em><i class="g" style="--v:82.9"></i></span><span class="sp__r"><em>3,279</em><i class="s" style="--v:85.0"></i></span></span><span class="sp__c" data-pair="1"><span class="sp__r"><em>799</em><i class="g" style="--v:70.1"></i></span><span class="sp__r"><em>1,454</em><i class="s" style="--v:76.4"></i></span></span><span class="sp__c" data-pair="2"><span class="sp__r"><em>350</em><i class="g" style="--v:61.5"></i></span><span class="sp__r"><em>1,666</em><i class="s" style="--v:77.9"></i></span></span><span class="sp__c" data-pair="3"><span class="sp__r"><em>296</em><i class="g" style="--v:59.7"></i></span><span class="sp__r"><em>546</em><i class="s" style="--v:66.2"></i></span></span><span class="sp__c" data-pair="4"><span class="sp__r"><em>99</em><i class="g" style="--v:48.2"></i></span><span class="sp__r"><em>121</em><i class="s" style="--v:50.3"></i></span></span><span class="sp__c" data-pair="5"><span class="sp__r"><em>49</em><i class="g" style="--v:40.8"></i></span><span class="sp__r"><em>261</em><i class="s" style="--v:58.4"></i></span></span><span class="sp__l">YouTube</span><span class="sp__c" data-pair="0"><span class="sp__r"><em>1,286</em><i class="g" style="--v:75.1"></i></span></span><span class="sp__c" data-pair="1"><span class="sp__r"><em>584</em><i class="g" style="--v:66.9"></i></span></span><span class="sp__c" data-pair="2"><span class="sp__r"><em>209</em><i class="g" style="--v:56.1"></i></span></span><span class="sp__c" data-pair="3"><span class="sp__r"><em>493</em><i class="g" style="--v:65.1"></i></span></span><span class="sp__c" data-pair="4"><span class="sp__r"><em>125</em><i class="g" style="--v:50.7"></i></span></span><span class="sp__c" data-pair="5"><span class="sp__r"><em>69</em><i class="g" style="--v:44.4"></i></span></span><span class="sp__l">HeiChole</span><span class="sp__c" data-pair="0"><span class="sp__r"><em>1,109</em><i class="g" style="--v:73.6"></i></span></span><span class="sp__c" data-pair="1"><span class="sp__r"><em>322</em><i class="g" style="--v:60.6"></i></span></span><span class="sp__c" data-pair="2"><span class="sp__r"><em>101</em><i class="g" style="--v:48.4"></i></span></span><span class="sp__c" data-pair="3"><span class="sp__r"><em>101</em><i class="g" style="--v:48.4"></i></span></span><span class="sp__c" data-pair="4"><span class="sp__r"><em>87</em><i class="g" style="--v:46.9"></i></span></span><span class="sp__c" data-pair="5"><span class="sp__r"><em>79</em><i class="g" style="--v:45.9"></i></span></span><span class="sp__l">CRCD</span><span class="sp__c" data-pair="0"><span class="sp__r"><em>628</em><i class="g" style="--v:67.6"></i></span></span><span class="sp__c" data-pair="1"><span class="sp__r"><em>136</em><i class="g" style="--v:51.6"></i></span></span><span class="sp__c" data-pair="2"><span class="sp__r"><em>&ndash;</em></span></span><span class="sp__c" data-pair="3"><span class="sp__r"><em>&ndash;</em></span></span><span class="sp__c" data-pair="4"><span class="sp__r"><em>&ndash;</em></span></span><span class="sp__c" data-pair="5"><span class="sp__r"><em>&ndash;</em></span></span></div></div>
+    </div>
+    <div class="gc-row c2 stack ov">
+      <div class="gc-cell ov__p"><p class="ov__t"><span>4</span>When <em>window length, seconds</em></p><div class="hg"><div class="hg__bars"><span style="--g:0.3;--s:0.3;--d:0.00s"><i class="g"></i><i class="s"></i></span><span style="--g:1.0;--s:0.5;--d:0.03s"><i class="g"></i><i class="s"></i></span><span style="--g:1.8;--s:2.0;--d:0.06s"><i class="g"></i><i class="s"></i></span><span style="--g:7.6;--s:7.5;--d:0.09s"><i class="g"></i><i class="s"></i></span><span style="--g:13.0;--s:18.0;--d:0.12s"><i class="g"></i><i class="s"></i></span><span style="--g:21.0;--s:34.8;--d:0.15s"><i class="g"></i><i class="s"></i></span><span style="--g:36.3;--s:52.4;--d:0.18s"><i class="g"></i><i class="s"></i></span><span style="--g:48.5;--s:100.0;--d:0.21s"><i class="g"></i><i class="s"></i></span><span style="--g:54.0;--s:59.3;--d:0.24s"><i class="g"></i><i class="s"></i></span><span style="--g:58.1;--s:50.1;--d:0.27s"><i class="g"></i><i class="s"></i></span><span style="--g:62.0;--s:36.4;--d:0.30s"><i class="g"></i><i class="s"></i></span><span style="--g:47.8;--s:24.4;--d:0.33s"><i class="g"></i><i class="s"></i></span><span style="--g:32.0;--s:15.3;--d:0.36s"><i class="g"></i><i class="s"></i></span><span style="--g:18.8;--s:9.5;--d:0.39s"><i class="g"></i><i class="s"></i></span><span style="--g:9.8;--s:6.0;--d:0.42s"><i class="g"></i><i class="s"></i></span><span style="--g:5.7;--s:3.0;--d:0.45s"><i class="g"></i><i class="s"></i></span><span style="--g:2.9;--s:1.6;--d:0.48s"><i class="g"></i><i class="s"></i></span><span style="--g:1.3;--s:0.8;--d:0.51s"><i class="g"></i><i class="s"></i></span><span style="--g:0.1;--s:0.2;--d:0.54s"><i class="g"></i><i class="s"></i></span><span style="--g:0.1;--s:0.1;--d:0.57s"><i class="g"></i><i class="s"></i></span><u class="g" style="left:46.9%"></u><u class="s" style="left:40.1%"></u></div><div class="hg__ax"><span style="left:26.1%">1</span><span style="left:41.2%">2</span><span style="left:61.1%">5</span><span style="left:76.1%">10</span><span style="left:91.2%">20 s</span></div><p class="hg__med"><span class="g">Gold median 2.6 s</span><span class="s">Silver median 1.9 s</span></p></div></div>
+      <div class="gc-cell ov__p"><p class="ov__t"><em style="line-height:1.5em;font-size:calc(var(--u) * 12.5)">interaction share of the window</em><span class="ov__key"><i class="g"></i>Gold <i class="s"></i>Silver</span></p><div class="hg"><div class="hg__bars"><span style="--g:1.1;--s:0.3;--d:0.00s"><i class="g"></i><i class="s"></i></span><span style="--g:7.3;--s:0.6;--d:0.03s"><i class="g"></i><i class="s"></i></span><span style="--g:16.5;--s:1.1;--d:0.06s"><i class="g"></i><i class="s"></i></span><span style="--g:26.4;--s:2.6;--d:0.09s"><i class="g"></i><i class="s"></i></span><span style="--g:31.3;--s:7.2;--d:0.12s"><i class="g"></i><i class="s"></i></span><span style="--g:34.8;--s:9.8;--d:0.15s"><i class="g"></i><i class="s"></i></span><span style="--g:44.4;--s:13.9;--d:0.18s"><i class="g"></i><i class="s"></i></span><span style="--g:47.6;--s:15.8;--d:0.21s"><i class="g"></i><i class="s"></i></span><span style="--g:59.8;--s:24.3;--d:0.24s"><i class="g"></i><i class="s"></i></span><span style="--g:55.2;--s:30.9;--d:0.27s"><i class="g"></i><i class="s"></i></span><span style="--g:68.8;--s:44.7;--d:0.30s"><i class="g"></i><i class="s"></i></span><span style="--g:65.7;--s:47.9;--d:0.33s"><i class="g"></i><i class="s"></i></span><span style="--g:65.2;--s:65.2;--d:0.36s"><i class="g"></i><i class="s"></i></span><span style="--g:60.1;--s:78.7;--d:0.39s"><i class="g"></i><i class="s"></i></span><span style="--g:53.9;--s:89.9;--d:0.42s"><i class="g"></i><i class="s"></i></span><span style="--g:46.2;--s:100.0;--d:0.45s"><i class="g"></i><i class="s"></i></span><span style="--g:36.8;--s:95.9;--d:0.48s"><i class="g"></i><i class="s"></i></span><span style="--g:26.1;--s:78.7;--d:0.51s"><i class="g"></i><i class="s"></i></span><span style="--g:13.3;--s:44.4;--d:0.54s"><i class="g"></i><i class="s"></i></span><span style="--g:1.8;--s:10.3;--d:0.57s"><i class="g"></i><i class="s"></i></span><u class="g" style="left:54.0%"></u><u class="s" style="left:72.0%"></u></div><div class="hg__ax"><span style="left:0.0%">0%</span><span style="left:25.0%">25%</span><span style="left:50.0%">50%</span><span style="left:75.0%">75%</span><span style="left:100.0%">100%</span></div><p class="hg__med"><span class="g">Gold median 54%</span><span class="s">Silver median 72%</span></p></div></div>
+    </div>
     <div class="gc-row c1"><div class="gc-cell gc-well" style="padding: calc(var(--u) * 22);"><img src="assets/fig_pipeline.png" alt="How TACTUS is annotated: select sources, cut clips and mark time, place points (Gold), review, and scale up with TactusNet (Silver)" loading="lazy" style="mix-blend-mode: multiply;"></div></div>
     <div class="gc-row c2 stack">
       <div class="gc-cell gc-card"><div class="gc-well"></div><p class="gc-num">Gold &middot; 15,668 clips &middot; 101 videos</p><h3 class="gc-title">Humans place the points</h3><p class="gc-copy">Human annotators label the tool, action, and time windows and place spatial prompts. Point tracking is followed by review and a final re-check.</p></div>
@@ -607,6 +691,15 @@
       <div class="gc-cell gc-card"><div class="gc-well"></div><p class="gc-num">Stage II</p><h3 class="gc-title">Temporal Head</h3><p class="gc-copy">The start and end of the interaction window within the action window.</p></div>
       <div class="gc-cell gc-card"><div class="gc-well"></div><p class="gc-num">Stage III</p><h3 class="gc-title">Spatial Head</h3><p class="gc-copy">TactusNet first locates the tool on each full frame and crops around its landmarks. Separate decoders predict three tool landmarks and four contact-region corners in the crop. A final pass refines the tool landmarks at native resolution.</p></div>
       <div class="gc-cell gc-card"><div class="gc-well"></div><p class="gc-num">Stage IV</p><h3 class="gc-title">Track Propagation</h3><p class="gc-copy">For dense annotation, TactusNet selects the most confident frame within the interaction window separately for tool points and contact corners. CoTracker3 tracks each group through the full action window.</p></div>
+    </div>
+    <div class="gc-row c1"><div class="gc-cell gc-pad pred-note">
+      <p class="gc-num">TactusNet &middot; Gold test set</p><h3 class="gc-title">What TactusNet predicts</h3>
+      <p class="gc-copy" style="max-width:86ch;">Three test clips, every frame. <span class="pk pk--dot"></span>Filled points and the <span class="pk pk--reg"></span>cyan region are TactusNet&rsquo;s, placed by the Spatial Head and carried through the window by Track Propagation. <span class="pk pk--ring"></span>White rings and the <span class="pk pk--dash"></span>dashed outline are Gold. The tool, action, and interaction window are given, as in the How and Where protocol. The examples were chosen for low error among 15 randomly drawn test clips (tool-point error 4.1, 5.6, and 8.4 px here; 19.15 px on average over the test set).</p>
+    </div></div>
+    <div class="gc-row c3">
+      <div class="gc-cell gc-well"><video src="assets/pred_1.mp4" poster="assets/pred_1.jpg" aria-label="TactusNet prediction, hook dissect" autoplay loop muted playsinline preload="metadata"></video></div>
+      <div class="gc-cell gc-well"><video src="assets/pred_2.mp4" poster="assets/pred_2.jpg" aria-label="TactusNet prediction, grasper grasp" autoplay loop muted playsinline preload="metadata"></video></div>
+      <div class="gc-cell gc-well"><video src="assets/pred_3.mp4" poster="assets/pred_3.jpg" aria-label="TactusNet prediction, scissors dissect" autoplay loop muted playsinline preload="metadata"></video></div>
     </div>
   </div><div class="gc-hatch"></div></div>
 </section>
@@ -688,7 +781,7 @@
     document.querySelectorAll('.rv').forEach(function (el) { io.observe(el); });
   })();
 </script>
-<video id="vMosaic" src="assets/mosaic.mp4" poster="assets/mosaic_poster.jpg" muted loop playsinline autoplay preload="auto" hidden></video>
+<video id="vMosaic" src="assets/opening.mp4" poster="assets/opening_poster.jpg" muted loop playsinline autoplay preload="auto" hidden></video>
 
 <script>
   (function () {
@@ -714,6 +807,7 @@
     const video = document.querySelector('.hero__media');
     const bubble = document.getElementById('bubble');
     const text = document.getElementById('bubbleText');
+    const tag = document.getElementById('bubbleTag');
     const links = Array.from(menu.querySelectorAll('.paw-item'));
     let active = links[0];
     let lastTime = video.currentTime;
@@ -725,8 +819,14 @@
       active.classList.toggle('is-tapped', tapped);
       bubble.classList.toggle('is-tap', tapped);
       text.textContent = tapped ? link.dataset.tap : link.dataset.idle;
+      tag.textContent = link.dataset.tag; bubble.dataset.tone = link.dataset.tone;
     }
-    highlight(active);
+    // The paw always reaches the same spot (the lowest slot), so the link whose turn it is slides into that slot.
+    function place(link) {
+      const a = links.indexOf(link), n = links.length;
+      links.forEach((el, k) => el.style.setProperty('--s', (n - 1 - ((k - a + n) % n)) - k));
+    }
+    highlight(active); place(active);
     for (const link of links) {
       link.addEventListener('pointerenter', () => highlight(link));
       link.addEventListener('focus', () => highlight(link));
@@ -739,10 +839,29 @@
       if (menu.matches(':hover, :focus-within')) return;
       const next = looped ? links[(links.indexOf(active) + 1) % links.length] : active;
       const tapped = time > 3.75 && time < 4.95;
+      if (looped) place(next);
       if (next !== active || tapped !== active.classList.contains('is-tapped')) highlight(next, tapped);
     });
   })();
 </script>
 <script src="opening.js"></script>
+<script>
+  // Fig. 1 panels: fill in and count up once on screen; pointing at a pair in panel 1 or 3 picks it out in both
+  (function () {
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      if (!e.isIntersecting) return; io.unobserve(e.target); e.target.classList.add('in');
+      e.target.querySelectorAll('b[data-n]').forEach((b, k) => {
+        const n = +b.dataset.n, suf = b.dataset.suffix || '', t0 = performance.now() + k * 70, dur = 1000, fmt = (x) => Math.round(x).toLocaleString('en-US') + suf;
+        if (still) { b.textContent = fmt(n); return; }
+        (function tick(now) { const x = Math.min(1, Math.max(0, (now - t0) / dur)); b.textContent = fmt(n * (1 - Math.pow(1 - x, 3))); if (x < 1) requestAnimationFrame(tick); })(performance.now());
+      });
+    }), { threshold: 0.3 });
+    document.querySelectorAll('.ov__p').forEach((el) => io.observe(el));
+    const rows = document.querySelectorAll('.ov'), cells = document.querySelectorAll('.ov [data-pair]');
+    function pick(p) { rows.forEach((r) => r.classList.toggle('dim', p !== null)); cells.forEach((c) => c.classList.toggle('hot', c.dataset.pair === p)); }
+    cells.forEach((c) => { c.addEventListener('pointerenter', () => pick(c.dataset.pair)); c.addEventListener('pointerleave', () => pick(null)); });
+  })();
+</script>
 </body>
 </html>
