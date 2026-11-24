@@ -4,14 +4,6 @@
   --bs-rule: #c6c5bf;
   color: var(--ink);
   background: var(--paper);
-  min-height: calc(100svh + min(72svh, 680px));
-}
-.bs-pin {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  display: grid;
-  align-content: center;
 }
 .bs-stage { width: 100%; padding: clamp(20px, 3vw, 48px); }
 .bs-rule { height: 1px; background: var(--bs-rule); }
@@ -94,10 +86,6 @@
 .bs-chart-units { display: grid; grid-template-columns: 1fr 1fr; margin: 0 6%; text-align: center; font-size: clamp(11px, 1vw, 14px); line-height: 1.25; color: var(--bs-muted); }
 .bs-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-@media (max-width: 860px), (max-height: 544px), (prefers-reduced-motion: reduce) {
-  .bs-story { min-height: 0; }
-  .bs-pin { position: static; height: auto; }
-}
 @media (max-width: 860px), (max-height: 544px) {
   .bs-split { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .bs-card { aspect-ratio: 16 / 11; }

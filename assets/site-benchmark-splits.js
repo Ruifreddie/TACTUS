@@ -1,7 +1,6 @@
 (() => {
   const story = document.querySelector('.bs-story');
   if (!story) return;
-  const pin = story.querySelector('.bs-pin');
   const card = story.querySelector('.bs-card');
   const stat = card.querySelector('.bs-stat');
   const label = card.querySelector('.bs-stat-label');
@@ -16,13 +15,11 @@
   const clipTotal = groups.reduce((sum, group) => sum + group.clips, 0);
   const videoTotal = groups.reduce((sum, group) => sum + group.videos, 0);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const desktop = matchMedia('(min-width: 861px) and (min-height: 545px)');
   const fullCap = 3.082;
   const format = new Intl.NumberFormat('en-US');
   let active = -1;
   let painted;
   let tween = 0;
-  let scrollFrame = 0;
 
   function paint(values) {
     painted = values;
@@ -34,7 +31,8 @@
   }
 
   function select(index, instantly = false) {
-    if (active === index && !instantly) return;
+    const changed = active !== index;
+    if (!changed && !instantly) return;
     active = index;
     groups.forEach(({ item, button }, i) => {
       item.classList.toggle('is-open', i === index);
@@ -49,6 +47,14 @@
     caption.textContent = group.name + ': ' + format.format(group.clips) + ' of ' + format.format(clipTotal)
       + ' clips (' + share.toFixed(2) + '%), and ' + group.videos + ' of ' + videoTotal
       + ' videos (' + videoShare.toFixed(2) + '%).';
+
+    if (changed) {
+      const split = group.name.toLowerCase();
+      story.dataset.activeSplit = split;
+      document.dispatchEvent(new CustomEvent('tactus:split-change', {
+        detail: { split, name: group.name, clips: group.clips, videos: group.videos, clipTotal, videoTotal }
+      }));
+    }
 
     cancelAnimationFrame(tween);
     if (instantly || reduced.matches || !painted) {
@@ -77,31 +83,8 @@
     tween = requestAnimationFrame(tick);
   }
 
-  function scrollRange() {
-    if (!desktop.matches || reduced.matches) return 0;
-    return Math.max(0, story.offsetHeight - pin.offsetHeight);
-  }
-
-  function syncScroll() {
-    scrollFrame = 0;
-    const travel = scrollRange();
-    if (!travel) return;
-    const top = parseFloat(getComputedStyle(pin).top) || 0;
-    const progress = Math.max(0, Math.min(1, (top - story.getBoundingClientRect().top) / travel));
-    select(Math.round(progress * (groups.length - 1)));
-  }
-
-  function goTo(index) {
-    select(index);
-    const travel = scrollRange();
-    if (!travel) return;
-    const top = parseFloat(getComputedStyle(pin).top) || 0;
-    const start = scrollY + story.getBoundingClientRect().top - top;
-    window.scrollTo({ top: start + travel * index / (groups.length - 1), behavior: 'instant' });
-  }
-
   groups.forEach(({ button }, index) => {
-    button.addEventListener('click', () => { if (active !== index) goTo(index); });
+    button.addEventListener('click', () => select(index));
     button.addEventListener('keydown', (event) => {
       let next;
       switch (event.key) {
@@ -113,41 +96,11 @@
       }
       event.preventDefault();
       groups[next].button.focus({ preventScroll: true });
-      goTo(next);
+      select(next);
     });
   });
-  // On phones a deliberate sideways swipe changes split; vertical drags keep scrolling the page.
-  let swipeStart = null;
-  function setTouchAction() {
-    card.style.touchAction = desktop.matches ? 'auto' : 'pan-y pinch-zoom';
-  }
-  setTouchAction();
-  desktop.addEventListener('change', setTouchAction);
-  card.addEventListener('pointerdown', (event) => {
-    swipeStart = !desktop.matches && event.pointerType === 'touch' && event.isPrimary
-      ? { id: event.pointerId, x: event.clientX, y: event.clientY } : null;
-  }, { passive: true });
-  card.addEventListener('pointercancel', () => { swipeStart = null; }, { passive: true });
-  card.addEventListener('pointerup', (event) => {
-    const start = swipeStart;
-    swipeStart = null;
-    if (!start || start.id !== event.pointerId) return;
-    const dx = event.clientX - start.x;
-    const dy = event.clientY - start.y;
-    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    goTo(Math.max(0, Math.min(groups.length - 1, active + (dx < 0 ? 1 : -1))));
-  }, { passive: true });
-  function scheduleScroll() {
-    if (!scrollFrame) scrollFrame = requestAnimationFrame(syncScroll);
-  }
-  window.addEventListener('scroll', scheduleScroll, { passive: true });
-  window.addEventListener('resize', scheduleScroll);
-  reduced.addEventListener('change', () => {
-    select(active, true);
-    scheduleScroll();
-  });
+  reduced.addEventListener('change', () => select(active, true));
   select(0, true);
-  scheduleScroll();
 
   if (!reduced.matches && 'IntersectionObserver' in window && Element.prototype.animate) {
     const stage = story.querySelector('.bs-stage');

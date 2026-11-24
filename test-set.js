@@ -1,14 +1,26 @@
 (() => {
   const figure = document.getElementById('gold-test-set');
+  if (!figure) return;
   const canvas = figure.querySelector('canvas');
   const context = canvas.getContext('2d');
-  if (!context) return;
-
-  const table = figure.querySelector('table');
+  const summary = document.getElementById('benchmark-distribution');
+  const table = figure.querySelector('#test-pair-counts');
   const body = table.tBodies[0];
-  const controls = figure.querySelector('.test-set__controls');
+  const controls = figure.querySelector('#composition-mode');
+  const tabs = Array.from(controls.querySelectorAll('[data-view]'));
+  const panel = figure.querySelector('#composition-panel');
+  const testBody = figure.querySelector('.test-set__body');
+  const coverage = figure.querySelector('#split-class-coverage');
+  const sources = figure.querySelector('#split-sources');
+  const title = figure.querySelector('#test-set-title');
+  const splitNames = { train: 'training', val: 'validation', test: 'test' };
+  const sourceNames = ['Cholec80', 'SurgVU', 'YouTube', 'HeiChole', 'CRCD'];
+  const sourceVideos = { train: [24, 26, 15, 8, 6], val: [3, 3, 3, 1, 1], test: [3, 3, 3, 1, 1] };
+  let split = Object.hasOwn(splitNames, summary?.dataset.activeSplit) ? summary.dataset.activeSplit : 'train';
+  let view = 'pair';
   const pairGroups = Array.from(body.rows, (row) => ({
-    name: row.cells[0].textContent,
+    name: row.cells[0].textContent.trim(),
+    action: row.cells[0].textContent.trim().split('–')[1],
     tool: row.dataset.tool,
     count: Number(row.cells[1].textContent.replaceAll(',', '')),
     color: row.style.getPropertyValue('--dot')
@@ -48,6 +60,7 @@
   }
 
   function draw(progress = 1, previous = null) {
+    if (!context || !cell || testBody.hidden) return;
     context.clearRect(0, 0, canvas.width, canvas.height);
     if (previous && progress < 1) {
       paint(previous);
@@ -100,41 +113,151 @@
       button.textContent = group.name;
       button.setAttribute('aria-label', 'Highlight ' + group.name + ' clips');
       button.setAttribute('aria-pressed', 'false');
-      button.addEventListener('click', () => highlight(group));
+      button.addEventListener('click', () => { if (!testBody.hidden && groups.includes(group)) highlight(group); });
       row.insertCell().append(button);
       row.insertCell().textContent = group.count.toLocaleString('en-US');
       row.insertCell().textContent = (100 * group.count / total).toFixed(1) + '%';
     }
   }
 
-  for (const button of controls.querySelectorAll('button')) {
-    button.addEventListener('click', () => {
-      const byTool = button.dataset.view === 'tool';
-      const next = byTool ? toolGroups : pairGroups;
-      if (next === groups) return;
-      const previous = groups;
-      groups = next;
-      selection = null;
-      for (const other of controls.querySelectorAll('button')) {
-        other.setAttribute('aria-pressed', String(other === button));
-      }
-      table.tHead.rows[0].cells[0].textContent = byTool ? 'Tool' : 'Tool–action pair';
-      table.setAttribute('aria-label', 'Gold test clips by ' + (byTool ? 'tool' : 'tool–action pair'));
-      showLegend();
-      animate(340, previous);
-    });
+  function element(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text) node.textContent = text;
+    return node;
   }
-  controls.hidden = false;
-  figure.querySelector('.test-set__plot').hidden = false;
-  showLegend();
-  resize();
-  new ResizeObserver(resize).observe(canvas);
-  const entry = new IntersectionObserver((entries) => {
-    if (entries.some((item) => item.isIntersecting)) {
-      entry.disconnect();
-      animate(800);
+
+  function renderMatrix() {
+    const matrix = element('table', 'sc-matrix');
+    matrix.createCaption().textContent = 'Six annotated tool–action pairs';
+    const actions = ['Dissect', 'Grasp', 'Cut', 'Clip'];
+    const head = matrix.createTHead().insertRow();
+    for (const name of ['Instrument', ...actions]) {
+      const header = element('th', '', name);
+      header.scope = 'col';
+      head.append(header);
     }
-  }, { threshold: 0.25 });
-  entry.observe(canvas);
+    const rows = matrix.createTBody();
+    for (const tool of toolGroups) {
+      const row = rows.insertRow();
+      const header = element('th', '', tool.name);
+      header.scope = 'row';
+      row.append(header);
+      for (const action of actions) {
+        const pair = pairGroups.find((item) => item.tool === tool.name && item.action === action.toLowerCase());
+        const cell = row.insertCell();
+        const mark = element('span', pair ? 'sc-dot' : 'sc-dash', pair ? '' : '–');
+        mark.setAttribute('aria-hidden', 'true');
+        if (pair) mark.style.setProperty('--dot', pair.color);
+        cell.append(mark, element('span', 'sr-only', pair ? 'Included pair' : 'Outside the six annotated pairs'));
+      }
+    }
+    coverage.replaceChildren(matrix);
+  }
+
+  function renderTools() {
+    const list = element('dl', 'sc-tool-list');
+    for (const tool of toolGroups) {
+      const row = element('div', 'sc-tool-row');
+      const actions = element('dd', 'sc-actions');
+      for (const pair of pairGroups.filter((item) => item.tool === tool.name)) {
+        const chip = element('span', 'sc-action', pair.action);
+        chip.style.setProperty('--dot', pair.color);
+        actions.append(chip);
+      }
+      row.append(element('dt', '', tool.name), actions);
+      list.append(row);
+    }
+    coverage.replaceChildren(element('p', 'sc-caption', 'Actions annotated for each instrument'), list);
+  }
+
+  function renderSources() {
+    const counts = sourceVideos[split];
+    const totalVideos = counts.reduce((sum, n) => sum + n, 0);
+    const list = element('ul', 'sc-source-list');
+    for (const [index, name] of sourceNames.entries()) {
+      const count = counts[index];
+      const row = element('li', 'sc-source-row');
+      const track = element('span', 'sc-track');
+      track.setAttribute('aria-hidden', 'true');
+      const bar = element('span', 'sc-bar');
+      bar.style.width = 100 * count / totalVideos + '%';
+      track.append(bar);
+      row.append(element('span', 'sc-source-name', name), track,
+        element('span', 'sc-count', count + (count === 1 ? ' video' : ' videos')));
+      list.append(row);
+    }
+    sources.replaceChildren(element('p', 'sc-caption', totalVideos + ' videos across five sources'), list);
+  }
+
+  function render() {
+    cancelAnimationFrame(frame);
+    const previouslyShowingDots = !testBody.hidden;
+    selection = null;
+    const showDots = split === 'test' && view !== 'source';
+    title.textContent = 'Gold ' + splitNames[split] + ' set composition';
+    testBody.hidden = !showDots;
+    coverage.hidden = split === 'test' || view === 'source';
+    sources.hidden = view !== 'source';
+    for (const button of tabs) {
+      const active = button.dataset.view === view;
+      button.setAttribute('aria-selected', String(active));
+      button.tabIndex = active ? 0 : -1;
+      if (active) panel.setAttribute('aria-labelledby', button.id);
+    }
+    if (view === 'source') renderSources();
+    else if (!showDots) {
+      if (view === 'pair') renderMatrix();
+      else renderTools();
+    } else {
+      const previous = groups;
+      groups = view === 'tool' ? toolGroups : pairGroups;
+      const label = view === 'tool' ? 'Tool' : 'Tool–action pair';
+      table.tHead.rows[0].cells[0].textContent = label;
+      table.setAttribute('aria-label', 'Gold test clips by ' + label.toLowerCase());
+      showLegend();
+      resize();
+      animate(340, previouslyShowingDots ? previous : null);
+    }
+  }
+
+  function chooseView(next) {
+    if (view === next) return;
+    view = next;
+    render();
+  }
+
+  tabs.forEach((button, index) => {
+    button.addEventListener('click', () => chooseView(button.dataset.view));
+    button.addEventListener('keydown', (event) => {
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      const targets = { ArrowLeft: (index + tabs.length - 1) % tabs.length,
+        ArrowRight: (index + 1) % tabs.length, Home: 0, End: tabs.length - 1 };
+      if (!Object.hasOwn(targets, event.key)) return;
+      event.preventDefault();
+      const next = tabs[targets[event.key]];
+      next.focus({ preventScroll: true });
+      chooseView(next.dataset.view);
+    });
+  });
+  document.addEventListener('tactus:split-change', (event) => {
+    const next = event.detail?.split;
+    if (!Object.hasOwn(splitNames, next) || split === next) return;
+    split = next;
+    render();
+  });
+  function visitTestAnchor() {
+    if (location.hash !== '#gold-test-set') return;
+    view = 'pair';
+    summary?.querySelector('[data-name="Test"]')?.click();
+    split = 'test';
+    render();
+  }
+  window.addEventListener('hashchange', visitTestAnchor);
+  controls.hidden = false;
+  figure.querySelector('.test-set__plot').hidden = !context;
+  if (location.hash === '#gold-test-set') visitTestAnchor();
+  else render();
+  new ResizeObserver(resize).observe(canvas);
   reducedMotion.addEventListener('change', () => { cancelAnimationFrame(frame); draw(); });
 })();
