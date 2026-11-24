@@ -393,6 +393,11 @@
   .authors__names { font-size: calc(var(--u) * 14); line-height: 1.9; max-width: 900px; margin: 0 auto; }
   .authors__names sup, .authors__aff sup { font-size: .7em; }
   .authors__aff { font-size: calc(var(--u) * 12); opacity: .7; margin-top: calc(var(--u) * 10); line-height: 1.7; }
+  .authors__contacts { display: grid; gap: 4px; margin-top: 10px; font-size: clamp(12px, 1.1vw, 16px); line-height: 1.55; }
+  .authors__contacts p { display: flex; justify-content: center; align-items: baseline; flex-wrap: wrap; gap: 2px 12px; margin: 0; }
+  .authors__contacts a { color: var(--line); text-decoration: underline; text-underline-offset: .18em; white-space: nowrap; }
+  .authors__contacts a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+  @media (max-width: 560px) { .authors__contacts p > span { flex-basis: 100%; } }
   .authors .hero__actions { justify-content: center; margin-top: calc(var(--u) * 24); flex-wrap: wrap; }
   .abstract p { font-size: calc(var(--u) * 13.3); line-height: 1.75; max-width: 78ch; margin: 0 auto calc(var(--u) * 12); }
   .abstract b { font-weight: 500; background: var(--ink); color: #dcdcda; padding: 0 .3em; }
@@ -602,7 +607,14 @@
 <section class="sec authors" id="authors">
   <span class="authors__venue">Dataset &middot; Benchmark &middot; TactusNet</span>
   <p class="authors__names">Lurui Wang<sup>1*</sup>, Hao Ding<sup>1*</sup>, Chenhao Yu<sup>2</sup>, Chenyan Jing<sup>1</sup>, Jiru Xu<sup>1</sup>, Ruoqi Zuo<sup>1</sup>, Liwei Mei<sup>1</sup>, Chang Liu<sup>3</sup>, Lalithkumar Seenivasan<sup>1</sup>, Mathias Unberath<sup>1&dagger;</sup></p>
-  <p class="authors__aff"><sup>1</sup>Johns Hopkins University &nbsp; <sup>2</sup>University of Virginia, Charlottesville &nbsp; <sup>3</sup>University of Toronto<br>*Equal contribution &nbsp; &dagger;Corresponding author</p>
+  <p class="authors__aff"><sup>1</sup>Johns Hopkins University &nbsp; <sup>2</sup>University of Virginia, Charlottesville &nbsp; <sup>3</sup>University of Toronto</p>
+  <div class="authors__contacts">
+    <p><span><sup>*</sup> Co-first authors</span>
+      <a href="mailto:lwang255@jhu.edu" aria-label="Email Lurui Wang at lwang255@jhu.edu">lwang255@jhu.edu</a>
+      <a href="mailto:hding2455@gmail.com" aria-label="Email Hao Ding at hding2455@gmail.com">hding2455@gmail.com</a></p>
+    <p><span><sup>&dagger;</sup> Corresponding author</span>
+      <a href="mailto:mathias@jhu.edu" aria-label="Email Mathias Unberath at mathias@jhu.edu">mathias@jhu.edu</a></p>
+  </div>
   <div class="hero__actions">
     <a class="btn" href="https://github.com/Ruifreddie/TACTUS">Code</a>
     <a class="btn" href="https://huggingface.co/datasets/hding2455/surgical-action-affordance">Dataset</a>
