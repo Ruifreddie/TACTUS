@@ -694,7 +694,7 @@
     </div>
     <div class="gc-row c1"><div class="gc-cell gc-pad pred-note">
       <p class="gc-num">TactusNet &middot; Gold test set</p><h3 class="gc-title">What TactusNet predicts</h3>
-      <p class="gc-copy" style="max-width:86ch;">Three test clips, every frame. <span class="pk pk--dot"></span>Filled points and the <span class="pk pk--reg"></span>cyan region are TactusNet&rsquo;s, placed by the Spatial Head and carried through the window by Track Propagation. <span class="pk pk--ring"></span>White rings and the <span class="pk pk--dash"></span>dashed outline are Gold. The tool, action, and interaction window are given, as in the How and Where protocol. The examples were chosen for low error among 15 randomly drawn test clips (tool-point error 4.1, 5.6, and 8.4 px here; 19.15 px on average over the test set).</p>
+      <p class="gc-copy" style="max-width:86ch;">Three Gold test clips, shown frame by frame. <span class="pk pk--dot"></span>Filled points and the <span class="pk pk--reg"></span>cyan region show TactusNet&rsquo;s tracks. The Spatial Head uses the annotated tool and action to predict points. The annotated interaction window guides prompt-frame selection, and CoTracker3 propagates the selected points. <span class="pk pk--ring"></span>White rings and the <span class="pk pk--dash"></span>dashed outline show the Gold annotations. We selected three low-error examples from 15 randomly drawn test clips (4.1, 5.6, and 8.4 px tool-point error). Table 3 reports 19.15 px for the frozen TactusNet using direct predictions on 16 sampled frames per clip across the full Gold test set.</p>
     </div></div>
     <div class="gc-row c3">
       <div class="gc-cell gc-well"><video src="assets/pred_1.mp4" poster="assets/pred_1.jpg" aria-label="TactusNet prediction, hook dissect" autoplay loop muted playsinline preload="metadata"></video></div>
@@ -757,7 +757,7 @@
       </table>
     </div></div>
     <div class="gc-row c1"><div class="gc-cell gc-pad" style="display:flex;flex-wrap:wrap;gap:calc(var(--u) * 14);align-items:center;justify-content:space-between;">
-      <p class="gc-copy" style="max-width:62ch;">The learned methods train on Gold. The three reference baselines have no trainable parameters. When, How, and Where use the ground-truth tool and action. Spatial scores use direct predictions on 16 sampled frames, before track propagation. Shaded rows show TactusNet. Each column highlights its best value.</p>
+      <p class="gc-copy" style="max-width:62ch;">The learned methods train on Gold. Endo-FM&rsquo;s pretraining included two of the 11 Gold test videos. The three reference baselines have no trainable parameters. When, How, and Where use the ground-truth tool and action. Spatial scores use direct predictions on 16 sampled frames, before track propagation. Shaded rows show TactusNet. Each column highlights its best value.</p>
       <div class="hero__actions"><a class="btn" href="https://github.com/Ruifreddie/TACTUS/tree/main/baselines">Run the benchmark</a><a class="btn" href="https://huggingface.co/abccbd/TACTUS-TactusNet">Get the checkpoints</a></div>
     </div></div>
   </div><div class="gc-hatch"></div></div>
