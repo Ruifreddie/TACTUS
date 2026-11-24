@@ -132,7 +132,7 @@ For a new kind, edit three places:
 python -m baselines.ablate.tests.test_ablate
 ```
 
-The first check verifies that every `stub` matches its `dim`. It needs no GPU and no data. The last check of this script reads `table_ablation.tex`, which is not in this directory, so the script stops there.
+The first check verifies that each `stub` matches its `dim`. It needs no GPU or data. The last check verifies that the collector can fill the cells in the [development table template](table_ablation.tex).
 
 ## Run it
 
@@ -238,7 +238,7 @@ python -m baselines.common.score --pred $AO/enc/myenc/when/pred_test.npz --compa
 
 `--compare` runs a paired bootstrap over the test videos against a second file. `heads.py` also writes `<out>.check.json` next to each prediction file, with the trainer's own metrics and the unbootstrapped `score.py` numbers.
 
-`ablate_collect` scores all rows at once into `$AO/results.json` and fills a LaTeX table. It needs the template `baselines/ablate/table_ablation.tex`, which is not part of this directory.
+`ablate_collect` scores the available predictions into `$AO/results.json` and fills the [development report template](table_ablation.tex). Its panels include additional variants explored during development. See Table 4 in the paper for the reported ablations, panel order, and results.
 
 ## Files
 

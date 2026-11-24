@@ -10,9 +10,9 @@ one GPU, as subprocesses that log to <run>/train.log (the heads are launch-bound
 throughput of one).
 
 Layout: <out>/<config>/seed<k>/ (one trainer run each, see train.py), <out>/<config>/summary.json (val per seed),
-<out>/selection.json (the configs' mean val tIoU, the selected one, and the selected config's test numbers per seed with
-mean and std = the Tab. 3 entry), and <out>/pred_{val,test}.npz = the selected config's representative seed (best val
-tIoU), the file to score and to compare with `baselines.common.score`. Only the selected config is scored on test.
+<out>/selection.json (the configs' mean val tIoU, the selected one, and its test numbers per seed with mean and std),
+and <out>/pred_{val,test}.npz from the selected config's best validation seed, for scoring with baselines.common.score.
+Only the selected config is scored on test. Use --configs main --seeds 0 for the run reported in Table 3(b).
 Re-running resumes: finished runs are skipped (their predictions are rewritten from best.pt), interrupted ones resume.
 """
 import argparse, json, shutil, sys

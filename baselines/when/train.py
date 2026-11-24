@@ -15,7 +15,7 @@ an error unless --fresh), keeps <out>/best.pt by val tIoU (common.train_utils.Ch
 fallback flags), and <out>/info.json with the recipe actually used. Train = Gold train clips with an annotated interval;
 val and test predictions cover every clip of the split; test is never used for any choice.
 With --seeds the representative <out>/pred_{val,test}.npz are those of the seed with the best val tIoU, and
-<out>/summary.json has every seed's val and test numbers with their mean and std (the Tab. 3 entry is mean +- std).
+<out>/summary.json has every seed's val and test numbers with their mean and std. Table 3(b) reports --config main --seed 0.
 """
 import argparse, json, math, random, shutil, sys, time
 from pathlib import Path

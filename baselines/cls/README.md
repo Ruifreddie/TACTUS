@@ -62,9 +62,7 @@ proves the code path.
 | loss | CE | CE | soft CE, Mixup 0.8 / CutMix 1.0, smoothing 0.1 | soft CE, Mixup 0.8 / CutMix 1.0 (X-CLIP blending), smoothing 0.1 | CE | soft CE, Mixup 0.8 / CutMix 1.0, smoothing 0.1 |
 | normalization | ImageNet | ImageNet | ImageNet | ImageNet | mean 0.45, std 0.225 | mean 0.45, std 0.225 |
 
-Paper column "Backbone, pretraining" and "Input" (Tab. 3 a): TSN = ResNet-50, IN-1k (not SSv2); TSM = ResNet-50, SSv2;
-VideoMAE = ViT-B, SSv2; X-CLIP = CLIP ViT-B/16, K400; Endo-FM = ViT-B, endoscopy videos; MViTv2-S = MViTv2-S, K400.
-Every row is 16 x 224^2.
+Table 3(a) reports five classification baselines. TSN and TSM use ResNet-50 pretrained on ImageNet-1k and SSv2, respectively. VideoMAE, X-CLIP, and Endo-FM use ViT-B/16 with VideoMAE and SSv2, CLIP and Kinetics-400, and Endo-FM endoscopy pretraining, respectively. All five receive 16 frames at 224 × 224. The harness also supports MViTv2-S as an optional classifier outside Table 3(a).
 
 ## GPU hours on one RTX 4090 (estimates)
 

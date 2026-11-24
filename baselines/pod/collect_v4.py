@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Collect the numbers of Tables 3 and 4 and of the supplement's nine-video comparison from the prediction files on the pod.
+"""Score predictions for Tables 3 and 4 on the Gold test set and on an additional nine-video subset.
 
-Every file is scored with baselines.common.score.score_file (the code of every row of the paper), twice: on all test clips,
-and without the two test videos that were in Endo-FM's pretraining data (the other nine test videos). Prints one line per
+Each available prediction file is scored twice: on all test clips and on the nine videos remaining after the two
+videos identified in the paper's Endo-FM pretraining note are excluded. Prints one line per
 row and writes everything to a JSON file. Missing files are listed, not fatal, so the script can run while jobs finish.
 
   python -m baselines.pod.collect_v4 [--bl-out $BL_OUT] [--ao $BL_OUT/ablate] [--out $BL_OUT/tables_v4.json] [--boot]

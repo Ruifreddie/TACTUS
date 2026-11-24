@@ -14,14 +14,18 @@ and its true tool-action pair, a method outputs one interval [start, end] on the
 
 ## Commands
 
+Table 3(b) reports each method with its `main` configuration and seed 0 (Supplement D.5, Table S15). Use the following commands for those runs.
+
 ```bash
 source baselines/env.example.sh               # or your edited copy; run_baselines.sh sets the same variables itself
 $BL_PY -m pip install -r baselines/when/requirements.txt
 source baselines/when/run.sh
 prep_when            # CPU: pool the 8-step features (train/val/test) + CLIP text features of the pair templates
 extract32            # GPU: token-equivalence check on 3 test clips, then the 32-step features (MS-TCN)
-train_actionformer   # GPU: the default sweep (main = official batch/LR, b64) x seeds 0,1,2, 3 runs at a time; val selects; test once
-train_tridet; train_qddetr; train_mstcn
+train_actionformer --configs main --seeds 0
+train_tridet --configs main --seeds 0
+train_qddetr --configs main --seeds 0
+train_mstcn --configs main --seeds 0
 score_when           # CPU: metrics_test.json (bootstrap CIs) of every finished row
 ```
 
@@ -44,10 +48,10 @@ Trainer contract (baselines/README.md): `--smoke`, resume from `last.pt` (refuse
 `pred_val.npz`/`pred_test.npz` (`common.preds`, kind `when`, with the fallback flags), `info.json` with the recipe actually
 used, the official configuration it starts from and every adaptation (`adaptations`: setting, official, TACTUS, reason).
 After a finished run the optimizer state is dropped from the checkpoints (`--keep-optimizer` keeps it).
-Output of a sweep: `<out>/<config>/seed<k>/` per run, `<out>/<config>/summary.json` (val per seed),
-`<out>/selection.json` (configs' mean val tIoU, the selected config, its test tIoU and R@0.7 per seed with mean and std:
-the Tab. 3 entry), and `<out>/pred_{val,test}.npz` = the selected config's seed with the best val tIoU (for the bootstrap
-CIs and `score.py --compare`). Only the selected config is scored on test.
+For Table 3(b), the [results collector](../pod/collect_v4.py) reads `<out>/main/seed0/pred_test.npz` for each method.
+For an optional sweep, `<out>/<config>/summary.json` records validation results by seed.
+`<out>/selection.json` identifies the configuration with the highest mean validation tIoU and reports that configuration's test tIoU and R@0.7 per seed, with their mean and standard deviation.
+The top-level prediction files, `<out>/pred_{val,test}.npz`, come from the selected configuration's best validation seed.
 
 ## Features
 

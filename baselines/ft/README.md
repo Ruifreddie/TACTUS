@@ -7,7 +7,7 @@ TactusNet keeps its V-JEPA 2.1 encoder frozen. The code here fine-tunes that enc
 
 ## Rows
 
-Every row starts from the trained heads of the Gold-only TactusNet run (experiment A in the pipeline, `training/pipeline`). This is LP-FT: linear-probe-then-fine-tune (Kumar et al., ICLR 2022). Every row trains 10 more epochs with the same clips, batches, schedule, code and selection rule. Two rows differ in one thing.
+The epoch-0 reference evaluates the trained heads of the Gold-only TactusNet run (experiment A in `training/pipeline`). The frozen control and the shared- and per-head fine-tuning runs start from those weights and train for 10 more epochs on the same clip stream and schedule. The table shows how each run selects its validation checkpoint. This follows the linear-probe-then-fine-tune (LP-FT) setup of Kumar et al. (ICLR 2022).
 
 | Row | Encoder | Which losses reach the encoder | Selection |
 | --- | --- | --- | --- |

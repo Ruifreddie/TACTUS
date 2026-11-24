@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Score the rows of Table 3 on the eight test videos outside SurgVU, next to all test clips.
 
-No development step of TactusNet's Spatial Head and no tool-point head of the Silver generator saw these eight videos
-(Supp. E.4), so they check the Table 3 ranking on an unaffected subset. Every file is scored with
-baselines.common.score.score_file (the code of every row of the paper). In addition, TactusNet is compared with every
-other learned row of its block by a paired bootstrap over the eight videos (metrics.paired_bootstrap).
+This source-group analysis compares the full Gold test set with its eight non-SurgVU videos. The script scores
+each available prediction file with baselines.common.score.score_file and compares TactusNet with the other
+learned methods in its task using a paired bootstrap over those eight videos (metrics.paired_bootstrap).
 
   python -m baselines.pod.collect_8vid --bl-out $GV/results/baselines/runs --out $GV/results/baselines/tables_8vid.json
 """
