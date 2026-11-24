@@ -1,0 +1,13 @@
+.tactus-pie {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--pie-fill, transparent);
+}
+.pie-swatch {
+  display: inline-block;
+  width: .7em;
+  height: .7em;
+  border-radius: 50%;
+  background-color: var(--swatch);
+  flex: none;
+}

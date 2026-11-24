@@ -4,6 +4,7 @@
   const controls = summary.querySelector('#composition-mode');
   const tabs = Array.from(controls.querySelectorAll('[data-view]'));
   const panel = summary.querySelector('#composition-panel');
+  const pie = panel.querySelector('#composition-pie');
   const table = panel.querySelector('#split-counts');
   const body = table.tBodies[0];
   const headers = table.tHead.rows[0].cells;
@@ -43,15 +44,23 @@
           name: group.name, actions: group.actions, count: group[split + 'Clips']
         }));
     const unit = bySource ? 'videos' : 'clips';
+    const slices = rows.map(row => ({ ...row, color: TactusPie.color(view, row.name) }));
+    TactusPie.paint(pie, slices);
+    pie.hidden = false;
+    panel.classList.add('sc-with-pie');
     table.caption.textContent = current.name + ' · ' + number.format(total) + ' ' + unit;
     headers[0].textContent = viewLabels[view];
     headers[1].textContent = bySource ? 'Videos' : 'Clips';
     body.replaceChildren();
-    for (const { name, actions, count } of rows) {
+    for (const { name, actions, count, color } of slices) {
       const row = body.insertRow();
       const label = document.createElement('th');
       label.scope = 'row';
-      label.textContent = name;
+      const swatch = document.createElement('span');
+      swatch.className = 'pie-swatch';
+      swatch.style.setProperty('--swatch', color);
+      swatch.setAttribute('aria-hidden', 'true');
+      label.append(swatch, name);
       if (actions) {
         const detail = document.createElement('span');
         detail.className = 'sc-tool-actions';

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="How: three instrument landmarks tracked over time">
+  <title>How: three instrument landmarks tracked over time</title>
+  <rect x="2" y="2" width="116" height="116" rx="20" fill="#F7F5F1" stroke="#D6CFC4" stroke-width="2"/>
+  <path d="M99.0 24.0 C104.0 44.0 93.0 58.0 74.6 65.2" fill="none" stroke="#FF3D00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="0.1 5.2" opacity="0.75"/>
+  <circle cx="99.0" cy="24.0" r="3.3" fill="#F7F5F1" stroke="#FF3D00" stroke-width="1.6" stroke-dasharray="2 1.7"/>
+  <circle cx="98.9" cy="42.3" r="3.5" fill="#FF3D00" opacity="0.4"/>
+  <circle cx="90.5" cy="55.5" r="4.3" fill="#FF3D00" opacity="0.68"/>
+  <line x1="20.0" y1="100.0" x2="52.0" y2="68.0" stroke="#1F1F1F" stroke-width="12.0" stroke-linecap="round"/>
+  <path d="M52.0 68.0 L64.7 55.3 L74.6 65.2" fill="none" stroke="#1F1F1F" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="47.8" cy="63.8" r="5.0" fill="#FFD400" stroke="#1F1F1F" stroke-width="2.0"/>
+  <circle cx="56.2" cy="72.2" r="5.0" fill="#FFD400" stroke="#1F1F1F" stroke-width="2.0"/>
+  <circle cx="74.6" cy="65.2" r="6.0" fill="#FF3D00" stroke="#1F1F1F" stroke-width="2.0"/>
+</svg>

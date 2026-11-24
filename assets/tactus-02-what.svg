@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="What: what the instrument does">
+  <title>What: what the instrument does</title>
+  <rect x="2" y="2" width="116" height="116" rx="20" fill="#F7F5F1" stroke="#D6CFC4" stroke-width="2"/>
+  <path d="M56 106 C58 90 63 70 77 64.5 C88 60.5 99 62 108 66.5 V98 Q108 106 100 106 Z" fill="#E8E4DD" stroke="#CFC4B4" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M75.5 70 Q80 74.5 81 82.5" fill="none" stroke="#A39C90" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="18.0" y1="96.0" x2="46.0" y2="68.0" stroke="#1F1F1F" stroke-width="12.0" stroke-linecap="round"/>
+  <path d="M46.0 68.0 L60.1 53.9 L71.5 65.2" fill="none" stroke="#1F1F1F" stroke-width="5.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="69.6" y1="54.8" x2="68.2" y2="47.0" stroke="#F2913D" stroke-width="3.8" stroke-linecap="round"/>
+  <line x1="75.4" y1="55.4" x2="78.4" y2="48.0" stroke="#F2913D" stroke-width="3.8" stroke-linecap="round"/>
+  <line x1="80.0" y1="59.0" x2="86.4" y2="54.3" stroke="#F2913D" stroke-width="3.8" stroke-linecap="round"/>
+</svg>
