@@ -1,6 +1,6 @@
 # Reading the TACTUS annotations
 
-The [Hugging Face dataset](https://huggingface.co/datasets/hding2455/surgical-action-affordance) contains an export from the annotation tool. Start with the index for the annotation tier you want. Each index maps an annotation ID to its source video, frame range, and associated files.
+The [Hugging Face dataset](https://huggingface.co/datasets/hding2455/TACTUS) contains an export from the annotation tool. Start with the index for the annotation tier you want. Each index maps an annotation ID to its source video, frame range, and associated files. The [previous dataset URL](https://huggingface.co/datasets/hding2455/surgical-action-affordance) redirects to the current TACTUS release.
 
 | Index file | Contents |
 | --- | --- |
@@ -25,7 +25,7 @@ The benchmark code does not read the annotation files directly. [`training/pipel
 
 ## Source terms
 
-The [public release](https://huggingface.co/datasets/hding2455/surgical-action-affordance) includes clips and TACTUS annotations from all five sources. Supplement F.2 and Table S21 report the following terms for the source videos.
+The [public release](https://huggingface.co/datasets/hding2455/TACTUS) includes clips and TACTUS annotations from all five sources. Supplement F.2 and Table S21 report the following terms for the source videos.
 
 | Video source | Terms reported in Table S21 |
 | --- | --- |

@@ -5,7 +5,7 @@ import argparse, collections, json, os, subprocess, sys, time, urllib.request as
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 ap = argparse.ArgumentParser(); ap.add_argument('--split-dir', required=True); ap.add_argument('--hf-meta', required=True); ap.add_argument('--out', required=True); ap.add_argument('--code', required=True); a = ap.parse_args()
-B = 'https://huggingface.co/datasets/hding2455/surgical-action-affordance/resolve/main/'; out = a.out; os.makedirs(f'{out}/split', exist_ok=True)
+B = 'https://huggingface.co/datasets/hding2455/TACTUS/resolve/main/'; out = a.out; os.makedirs(f'{out}/split', exist_ok=True)
 STATUS = json.load(open(f'{a.hf_meta}/review_status.json')); N = 12
 def pick(d, only=None):
     """Per video: N clips spread over it for the box, the short one among them goes through the exporter. Silver: clips that hold points."""
@@ -22,7 +22,7 @@ for s in ('train', 'val', 'test'): sets[s], x = pick(json.load(open(f'{a.split_d
 sil, x = pick(json.load(open(f'{a.hf_meta}/index_silver.json')), 'success'); more += x
 for s, d in sets.items(): json.dump(d, open(f'{out}/split/index_gold_{s}.json', 'w'))
 json.dump(sil, open(f'{out}/index_silver.json', 'w'))
-SIZE = {x['rfilename']: x.get('size') for x in json.load(U.urlopen('https://huggingface.co/api/datasets/hding2455/surgical-action-affordance?blobs=true', timeout=300))['siblings']}
+SIZE = {x['rfilename']: x.get('size') for x in json.load(U.urlopen('https://huggingface.co/api/datasets/hding2455/TACTUS?blobs=true', timeout=300))['siblings']}
 def get(f):
     p = f'{out}/hf/{f}'; os.makedirs(os.path.dirname(p), exist_ok=True)
     if os.path.exists(p) and os.path.getsize(p) == SIZE.get(f): return

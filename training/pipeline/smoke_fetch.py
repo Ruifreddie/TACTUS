@@ -3,7 +3,7 @@
 import collections, json, os, sys, urllib.request as U
 from concurrent.futures import ThreadPoolExecutor
 split_dir, hf_meta, out = sys.argv[1:4]
-B = 'https://huggingface.co/datasets/hding2455/surgical-action-affordance/resolve/main/'
+B = 'https://huggingface.co/datasets/hding2455/TACTUS/resolve/main/'
 def pick(d, per):
     by = collections.defaultdict(list)
     for u, e in d.items(): by[e['tool'] + e['action']].append((e['end'] - e['start'], u))

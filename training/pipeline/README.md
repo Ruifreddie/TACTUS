@@ -1,6 +1,6 @@
 # Training pipeline
 
-These scripts train all TactusNet heads on the data as published at [hding2455/surgical-action-affordance](https://huggingface.co/datasets/hding2455/surgical-action-affordance). Nothing is re-annotated. Start with [`../README.md`](../README.md) for prerequisites, environment variables and the step-to-checkpoint table.
+These scripts train all TactusNet heads on the data as published at [hding2455/TACTUS](https://huggingface.co/datasets/hding2455/TACTUS). Nothing is re-annotated. Start with [`../README.md`](../README.md) for prerequisites, environment variables and the step-to-checkpoint table.
 
 ## Experiments
 

@@ -23,7 +23,7 @@ Naming: the code calls the paper's action window the clip or `affordance_range`,
 
 | Item | Source |
 | --- | --- |
-| Data | [hding2455/surgical-action-affordance](https://huggingface.co/datasets/hding2455/surgical-action-affordance) on Hugging Face. `pipeline/fill_volume.py` downloads it. |
+| Data | [hding2455/TACTUS](https://huggingface.co/datasets/hding2455/TACTUS) on Hugging Face. `pipeline/fill_volume.py` downloads it. |
 | Encoder weights | `vjepa2_1_vitl_dist_vitG_384.pt`, the V-JEPA 2.1 ViT-L 384 checkpoint of the official V-JEPA 2 release. `fill_volume.py` downloads it and checks its SHA-256. Expected at `$GV/weights/`. |
 | Python packages | [`pipeline/requirements.txt`](pipeline/requirements.txt). `run_all.sh` installs it unless `SKIP_PIP=1`. PyTorch with CUDA is not in the list and must already be installed. `fill_volume.py` also imports `requests`. |
 | Tools | `bash`, `tar`, `curl`, `nvidia-smi`. |

@@ -8,7 +8,7 @@ import requests
 from concurrent.futures import ThreadPoolExecutor
 from huggingface_hub import HfApi
 ap = argparse.ArgumentParser(); ap.add_argument('--workers', type=int, default=8); a = ap.parse_args()
-GV = os.environ.get('GV', '/workspace'); TMP = os.environ.get('DL', '/root/dl'); REPO = 'hding2455/surgical-action-affordance'; BASE = f'https://huggingface.co/datasets/{REPO}/resolve/main/'
+GV = os.environ.get('GV', '/workspace'); TMP = os.environ.get('DL', '/root/dl'); REPO = 'hding2455/TACTUS'; BASE = f'https://huggingface.co/datasets/{REPO}/resolve/main/'
 AUTH = {'Authorization': 'Bearer ' + os.environ['HF_TOKEN']} if os.environ.get('HF_TOKEN') else {}
 V_NAME = 'vjepa2_1_vitl_dist_vitG_384.pt'; V_SHA = '7ea9b7cb4a75d10644a8a8d42cff9e177b10dca8f02173f0eaf2b0bed82838c6'; V_URL = os.environ.get('VJEPA_URL', 'https://dl.fbaipublicfiles.com/vjepa2/' + V_NAME)
 os.makedirs(f'{GV}/raw', exist_ok=True); os.makedirs(f'{GV}/weights', exist_ok=True); os.makedirs(TMP, exist_ok=True)

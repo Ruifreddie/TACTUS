@@ -7,14 +7,14 @@ tags:
   - keypoint-detection
   - temporal-localization
 datasets:
-  - hding2455/surgical-action-affordance
+  - hding2455/TACTUS
 ---
 
 # TACTUS checkpoints
 
 Trained weights for **TACTUS** (Tool, Action, Contact and Trajectory Understanding in Surgery): the reference network TactusNet, its heads retrained on other frozen encoders, and the baselines of the benchmark.
 
-**[Code](https://github.com/Ruifreddie/TACTUS)** · **[Dataset](https://huggingface.co/datasets/hding2455/surgical-action-affordance)**
+**[Code](https://github.com/Ruifreddie/TACTUS)** · **[Dataset](https://huggingface.co/datasets/hding2455/TACTUS)**
 
 Every file is a PyTorch checkpoint written by the training code in the repository, unchanged apart from its file name. `SHA256SUMS` lists the checksum of each file.
 

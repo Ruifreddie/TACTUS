@@ -9,9 +9,9 @@ The benchmark evaluates recognition, temporal localization, instrument trajector
 | Test | 11 | 1,523 |
 | **Total** | **101** | **15,499** |
 
-The Gold release contains 15,668 clips. The table gives the fixed benchmark counts reported in Supplement D.1, Table S9. The [pre-export indices](../training/pipeline/splits/gold_v2/) contain 12,443 training, 1,654 validation, and 1,541 test records and specify each video's partition. The exact clip lists used for the paper are not included in this repository.
+The Gold release contains 15,668 clips. The table gives the fixed benchmark counts reported in Supplement D.1, Table S9. The [pre-export indices](../training/pipeline/splits/gold_v2/) contain 12,443 training, 1,654 validation, and 1,541 test records and specify each video's partition. The same five files are available in [the Hugging Face mirror](https://huggingface.co/datasets/hding2455/TACTUS/tree/main/splits/gold_v2). The exact clip lists used for the paper are not included in this repository.
 
-For a new export, the [exporter](../training/pipeline/export_clips.py) writes the successfully exported clip IDs to `all_train.txt`, `all_val.txt`, and `all_test.txt`. It records export failures in `export_report_<groups>.json`. The scorer reads the clip list from that export. [Gold release index](https://huggingface.co/datasets/hding2455/surgical-action-affordance/blob/main/index_gold.json)
+For a new export, the [exporter](../training/pipeline/export_clips.py) writes the successfully exported clip IDs to `all_train.txt`, `all_val.txt`, and `all_test.txt`. It records export failures in `export_report_<groups>.json`. The scorer reads the clip list from that export. [Gold release index](https://huggingface.co/datasets/hding2455/TACTUS/blob/main/index_gold.json)
 
 ## Metrics
 

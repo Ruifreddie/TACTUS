@@ -59,7 +59,7 @@ experiment directory for the `--exp` checks).
 Base packages: torch, torchvision, numpy, opencv, pillow, scipy, `transformers==5.1.0`, `timm==1.0.24`. Each family
 adds a `requirements.txt`.
 
-**The export.** The dataset is at https://huggingface.co/datasets/hding2455/surgical-action-affordance. The baselines do
+**The export.** The dataset is at https://huggingface.co/datasets/hding2455/TACTUS. The baselines do
 not read it directly. They read an export: one array file per clip and annotation, written by
 `training/pipeline/export_clips.py` (see `training/pipeline/README.md`). The reader expects, under `$BL_EXPORT`:
 `labels.json`, `meta.json`, `all_{train,val,test,silver}.txt`, `gt_tool_xy/`, `gt_tool_vis/`, `gt_ct_xy/`,
