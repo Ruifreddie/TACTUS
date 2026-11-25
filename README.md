@@ -4,7 +4,7 @@
 
 **TACTUS** (Tool, Action, Contact and Trajectory Understanding in Surgery) is a dataset and benchmark for following an instrument–tissue interaction from approach through completion. Each clip identifies the tool and action and marks the time windows. Nearly all clips also include per-frame spatial annotations of instrument motion and tissue involvement.
 
-**[Project Page](https://ruifreddie.github.io/TACTUS/)** · **[Dataset on Hugging Face](https://huggingface.co/datasets/hding2455/surgical-action-affordance)** · **[Checkpoints](https://huggingface.co/abccbd/TACTUS-TactusNet)** · **[Annotation guide](data/README.md)** · **[TactusNet](models/README.md)** · **[Evaluation protocol](evaluation/README.md)**
+**[arXiv Paper](https://arxiv.org/html/2611.31956)** · **[Project Page](https://ruifreddie.github.io/TACTUS/)** · **[Dataset on Hugging Face](https://huggingface.co/datasets/hding2455/surgical-action-affordance)** · **[Checkpoints](https://huggingface.co/abccbd/TACTUS-TactusNet)** · **[Annotation guide](data/README.md)** · **[TactusNet](models/README.md)** · **[Evaluation protocol](evaluation/README.md)**
 
 <table>
   <tr>
@@ -97,3 +97,16 @@ Lurui Wang¹*, Hao Ding¹*, Chenhao Yu², Chenyan Jing¹, Jiru Xu¹, Ruoqi Zuo¹
 
 \* Equal contribution: [Lurui Wang](mailto:lwang255@jhu.edu) and [Hao Ding](mailto:hding2455@gmail.com).  
 † Corresponding author: [Mathias Unberath](mailto:mathias@jhu.edu).
+
+## Citation
+
+```bibtex
+@article{wang2026tactus,
+  title   = {{TACTUS}: Unifying Surgical Action Understanding in Time and Space},
+  author  = {Wang, Lurui and Ding, Hao and Yu, Chenhao and Jing, Chenyan and Xu, Jiru and Zuo, Ruoqi and Mei, Liwei and Liu, Chang and Seenivasan, Lalithkumar and Unberath, Mathias},
+  journal = {arXiv preprint arXiv:2611.31956},
+  year    = {2026},
+  doi     = {10.48550/arXiv.2611.31956},
+  url     = {https://arxiv.org/abs/2611.31956}
+}
+```
