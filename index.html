@@ -321,6 +321,15 @@
 
   /* ---------- TACTUS additions on top of the template ---------- */
   .hero__title { width: calc(var(--u) * 436); }
+  .hero-downloads {
+    position: absolute; z-index: 2; left: var(--gutter); top: calc(23.1% + var(--u) * 165);
+    display: grid; gap: .2em; width: max-content; font-size: clamp(11px, calc(var(--u) * 11), 17px);
+  }
+  .hero-downloads[hidden] { display: none; }
+  .hero-downloads strong { font-size: 2em; line-height: 1; color: #984000; font-variant-numeric: tabular-nums; }
+  @media (max-width: 720px) {
+    .hero-downloads { top: calc(var(--u) * 270); }
+  }
   .hero__paper {
     position: absolute; left: var(--gutter); top: calc(23.1% + var(--u) * 102);
     font-size: calc(var(--u) * 17); line-height: calc(var(--u) * 23); letter-spacing: -0.01em; font-weight: 500;
@@ -587,6 +596,45 @@
   </h1>
 
   <p class="hero__paper">Unifying Surgical Action Understanding<br>in Time and Space</p>
+  <a class="hero-downloads" href="https://huggingface.co/datasets/hding2455/TACTUS" hidden>
+    <strong></strong><span>Downloads last month</span>
+  </a>
+  <script>
+    (() => {
+      const link = document.querySelector('.hero-downloads');
+      const number = link.querySelector('strong');
+      const format = new Intl.NumberFormat('en-US');
+      const interval = 5 * 60 * 1000;
+      let lastCheck = 0;
+      async function refresh() {
+        if (document.hidden || Date.now() - lastCheck < interval) return;
+        lastCheck = Date.now();
+        try {
+          const response = await fetch('https://huggingface.co/api/datasets/hding2455/TACTUS?expand=downloads', {cache: 'no-cache'});
+          if (!response.ok) return;
+          const {downloads} = await response.json();
+          if (!Number.isSafeInteger(downloads) || downloads < 0) return;
+          const animate = link.hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+          link.hidden = false;
+          link.setAttribute('aria-label', format.format(downloads) + ' dataset downloads last month on Hugging Face');
+          if (animate) {
+            const start = performance.now();
+            function draw(now) {
+              const progress = Math.min(1, (now - start) / 800);
+              number.textContent = format.format(Math.round(downloads * (1 - (1 - progress) ** 2)));
+              if (progress < 1) requestAnimationFrame(draw);
+            }
+            requestAnimationFrame(draw);
+          } else {
+            number.textContent = format.format(downloads);
+          }
+        } catch { /* Keep the most recent successful reading. */ }
+      }
+      refresh();
+      setInterval(refresh, interval);
+      document.addEventListener('visibilitychange', refresh);
+    })();
+  </script>
   <div class="mosaic-slot" id="mosaicSlot" aria-hidden="true"><div class="q-card" style="--i:0"><i></i><span>Which tool</span></div><div class="q-card" style="--i:1"><i></i><span>What action</span></div><div class="q-card" style="--i:2"><i></i><span>When</span></div><div class="q-card" style="--i:3"><i></i><span>How</span></div><div class="q-card" style="--i:4"><i></i><span>Where</span></div></div>
 
   <p class="bubble" id="bubble" aria-hidden="true"><span class="bubble__tag" id="bubbleTag">1/3 CODE</span><span id="bubbleText">Purr! Want the code?</span><span class="bubble__cursor" aria-hidden="true"></span>
