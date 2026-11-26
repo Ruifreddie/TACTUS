@@ -6,7 +6,7 @@
 
 **[arXiv Paper](https://arxiv.org/html/2611.31956)** · **[Project Page](https://ruifreddie.github.io/TACTUS/)** · **[Dataset on Hugging Face](https://huggingface.co/datasets/hding2455/TACTUS)** · **[Checkpoints](https://huggingface.co/abccbd/TACTUS-TactusNet)** · **[Annotation guide](data/README.md)** · **[TactusNet](models/README.md)** · **[Evaluation protocol](evaluation/README.md)**
 
-[![Dataset downloads last month](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fhuggingface.co%2Fapi%2Fdatasets%2Fhding2455%2FTACTUS%3Fexpand%3Ddownloads&query=%24.downloads&label=Downloads%20last%20month&color=984000&cacheSeconds=300)](https://huggingface.co/datasets/hding2455/TACTUS)
+[![Total dataset downloads on Hugging Face](assets/dataset-downloads.svg)](https://huggingface.co/datasets/hding2455/TACTUS)
 
 <table>
   <tr>
