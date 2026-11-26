@@ -323,12 +323,32 @@
   .hero__title { width: calc(var(--u) * 436); }
   .hero-downloads {
     position: absolute; z-index: 2; left: var(--gutter); top: calc(23.1% + var(--u) * 165);
-    display: grid; gap: .2em; width: max-content; font-size: clamp(11px, calc(var(--u) * 11), 17px);
+    --stub: #ffb383;
+    display: inline-grid; grid-template-columns: auto auto; align-items: stretch;
+    width: max-content; background: #fff8ee; color: var(--ink);
+    border: 2px solid currentColor; border-radius: 4px;
+    box-shadow: 3px 3px 0 var(--ink); font-size: clamp(11px, calc(var(--u) * 10), 14px);
   }
   .hero-downloads[hidden] { display: none; }
-  .hero-downloads strong { font-size: 2em; line-height: 1; color: #984000; font-variant-numeric: tabular-nums; }
+  .hero-downloads__stub {
+    display: grid; place-items: center; width: 3.8em;
+    background: var(--stub); border-radius: 2px 0 0 2px;
+    border-right: 1px dashed #7c563f;
+  }
+  .hero-downloads__stub svg { width: 2.45em; height: 2.45em; }
+  .hero-downloads__metric { display: grid; gap: .3em; padding: .7em 1.1em .8em; }
+  .hero-downloads strong {
+    font-family: "DynaPuff", sans-serif; font-weight: 700; font-size: 2.85em;
+    letter-spacing: -.045em; line-height: 1.02; font-variant-numeric: tabular-nums;
+  }
+  .hero-downloads__label { font-size: 1em; line-height: 1.2; }
+  .hero-downloads:focus-visible { outline: 3px solid #0b7f8c; outline-offset: 5px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-downloads:is(:hover,:focus-visible) .download-arrow { animation: download-drop .45s ease-out; }
+    @keyframes download-drop { 0%,100% { transform: translateY(0); } 45% { transform: translateY(2px); } }
+  }
   @media (max-width: 720px) {
-    .hero-downloads { top: calc(var(--u) * 270); }
+    .hero-downloads { top: max(calc(var(--u) * 270), calc(27% + var(--u) * 52)); }
   }
   .hero__paper {
     position: absolute; left: var(--gutter); top: calc(23.1% + var(--u) * 102);
@@ -499,7 +519,7 @@
     --b: max(2px, calc(var(--u) * 2)); --ih: calc(var(--u) * 40); --gap: calc(var(--u) * 12);
     position: absolute; z-index: 2;
     /* the paw tip, as a point of the 1920 x 1080 video frame (the bubble is pinned the same way) */
-    left: max(calc(var(--gutter) + 15ch), calc((100vw - 1920 * var(--vs)) * .62 + 1920 * var(--vs) * .372 - var(--u) * 10));
+    left: max(calc(var(--gutter) + clamp(178px, 15vw, 235px) + var(--u) * 152), calc((100vw - 1920 * var(--vs)) * .62 + 1920 * var(--vs) * .372 - var(--u) * 10));
     top: calc((100vh - 1080 * var(--vs)) * .5 + 1080 * var(--vs) * .632);
     display: grid; justify-items: end; gap: var(--gap); width: max-content;
     transform: translate(-100%, calc(-100% + var(--ih) * .5));
@@ -597,7 +617,13 @@
 
   <p class="hero__paper">Unifying Surgical Action Understanding<br>in Time and Space</p>
   <a class="hero-downloads" href="https://huggingface.co/datasets/hding2455/TACTUS" hidden>
-    <strong></strong><span>Downloads last month</span>
+    <span class="hero-downloads__stub" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="currentColor" shape-rendering="crispEdges">
+        <path class="download-arrow" d="M14 3h4v9h4v-3h3v5h-3v3h-3v3h-6v-3h-3v-3H7V9h3v3h4z"/>
+        <path d="M3 20h4v4h18v-4h4v8H3z"/>
+      </svg>
+    </span>
+    <span class="hero-downloads__metric"><strong></strong><span class="hero-downloads__label">Total downloads</span></span>
   </a>
   <script>
     (() => {
@@ -610,23 +636,20 @@
         if (document.hidden || Date.now() - lastCheck < interval) return;
         lastCheck = Date.now();
         try {
-          const response = await fetch('https://huggingface.co/api/datasets/hding2455/TACTUS?expand=downloads', {cache: 'no-cache'});
+          const response = await fetch('https://huggingface.co/api/datasets/hding2455/TACTUS?expand=downloadsAllTime', {cache: 'no-cache'});
           if (!response.ok) return;
-          const {downloads} = await response.json();
+          const {downloadsAllTime: downloads} = await response.json();
           if (!Number.isSafeInteger(downloads) || downloads < 0) return;
-          const animate = link.hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+          const previous = number.textContent;
+          const formatted = format.format(downloads);
           link.hidden = false;
-          link.setAttribute('aria-label', format.format(downloads) + ' dataset downloads last month on Hugging Face');
-          if (animate) {
-            const start = performance.now();
-            function draw(now) {
-              const progress = Math.min(1, (now - start) / 800);
-              number.textContent = format.format(Math.round(downloads * (1 - (1 - progress) ** 2)));
-              if (progress < 1) requestAnimationFrame(draw);
+          link.setAttribute('aria-label', formatted + ' total dataset downloads on Hugging Face');
+          if (formatted !== previous) {
+            number.textContent = formatted;
+            if (!matchMedia('(prefers-reduced-motion: reduce)').matches && number.animate) {
+              number.animate([{transform: 'translateY(.2em)', opacity: .2}, {transform: 'translateY(0)', opacity: 1}],
+                {duration: 360, easing: 'cubic-bezier(.22,1,.36,1)'});
             }
-            requestAnimationFrame(draw);
-          } else {
-            number.textContent = format.format(downloads);
           }
         } catch { /* Keep the most recent successful reading. */ }
       }
