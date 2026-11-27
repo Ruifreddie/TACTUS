@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="197" height="26" viewBox="0 0 197 26" role="img" aria-labelledby="title">
-  <title id="title">Total dataset downloads: 6,655</title>
+  <title id="title">Total dataset downloads: 9,344</title>
   <rect width="197" height="26" rx="4" fill="#984000"/>
   <path fill="#202020" d="M4 0h128v26H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4z"/>
   <g fill="none" stroke="#ffbd83" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -7,6 +7,6 @@
   </g>
   <g fill="#fff" font-family="Verdana,Arial,sans-serif" font-size="12">
     <text x="25" y="17">Total downloads</text>
-    <text x="164.5" y="17" text-anchor="middle" font-weight="bold">6,655</text>
+    <text x="164.5" y="17" text-anchor="middle" font-weight="bold">9,344</text>
   </g>
 </svg>
